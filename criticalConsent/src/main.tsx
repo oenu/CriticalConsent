@@ -33,7 +33,10 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
             <Route path="/" element={<App />}>
               {/* <Route path="/about" element={<About />} /> */}
               <Route path="/register" element={<Register />} />
-              <Route path="/survey" element={<Survey />} />
+              <Route path="survey">
+                <Route path=":group_id" element={<Survey />} />
+                <Route index element={<Survey />} />
+              </Route>
               <Route path="*" element={<NotFound />} />
             </Route>
           </Routes>
