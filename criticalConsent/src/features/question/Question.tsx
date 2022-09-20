@@ -9,6 +9,7 @@ import {
   UnstyledButton,
   SimpleGrid,
   Container,
+  Paper,
 } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import { useAppDispatch } from "../../redux/hooks";
@@ -27,65 +28,23 @@ function Question({ question }: { question: QuestionType }) {
         <Text>{question.description}</Text>
         <Divider my="sm" />
 
-        {/* Text descriptions of the options, including buttons for mobile view*/}
-        <Grid>
-          <Grid.Col sm={12} lg={4}>
-            <Text>{question.example_low}</Text>
-            <div hidden={!mobileView}>
-              <Button
-                fullWidth
-                variant={question.select_low ? "filled" : "outline"}
-                onClick={() => {
-                  console.log("low");
-                  dispatch(
-                    selectResponse({ id: question.id, selection: "low" })
-                  );
-                }}
-              >
-                Select
-              </Button>
-            </div>
-          </Grid.Col>
-          <Grid.Col sm={12} lg={4}>
-            <Text>{question.example_mid}</Text>
-            <div hidden={!mobileView}>
-              <Button
-                fullWidth
-                variant={question.select_mid ? "filled" : "outline"}
-                onClick={() => {
-                  console.log("mid");
-                  dispatch(
-                    selectResponse({ id: question.id, selection: "mid" })
-                  );
-                }}
-              >
-                Select
-              </Button>
-            </div>
-          </Grid.Col>
-          <Grid.Col sm={12} lg={4}>
-            <Text>{question.example_high}</Text>
-            <div hidden={!mobileView}>
-              <Button
-                fullWidth
-                variant={question.select_high ? "filled" : "outline"}
-                onClick={() => {
-                  console.log("high");
-                  dispatch(
-                    selectResponse({ id: question.id, selection: "high" })
-                  );
-                }}
-              >
-                Select
-              </Button>
-            </div>
-          </Grid.Col>
-        </Grid>
-
-        {/* Buttons for the options in desktop view */}
+        {/* Desktop Mode */}
         <div hidden={mobileView}>
+          {/* Written Examples */}
           <Grid>
-            <Grid.Col sm={12} lg={4}>
+            <Grid.Col lg={4}>
+              <Text>{question.example_low}</Text>
+            </Grid.Col>
+            <Grid.Col lg={4}>
+              <Text>{question.example_mid}</Text>
+            </Grid.Col>
+            <Grid.Col lg={4}>
+              <Text>{question.example_high}</Text>
+            </Grid.Col>
+          </Grid>
+
+          <Grid>
+            <Grid.Col lg={4}>
               <Button
                 fullWidth
                 variant={question.select_low ? "filled" : "outline"}
@@ -99,7 +58,7 @@ function Question({ question }: { question: QuestionType }) {
                 Select
               </Button>
             </Grid.Col>
-            <Grid.Col sm={12} lg={4}>
+            <Grid.Col lg={4}>
               <Button
                 fullWidth
                 variant={question.select_mid ? "filled" : "outline"}
@@ -113,7 +72,7 @@ function Question({ question }: { question: QuestionType }) {
                 Select
               </Button>
             </Grid.Col>
-            <Grid.Col sm={12} lg={4}>
+            <Grid.Col lg={4}>
               <Button
                 fullWidth
                 variant={question.select_high ? "filled" : "outline"}
@@ -126,6 +85,65 @@ function Question({ question }: { question: QuestionType }) {
               >
                 Select
               </Button>
+            </Grid.Col>
+          </Grid>
+        </div>
+
+        {/* Mobile Mode */}
+        <div hidden={!mobileView}>
+          <Grid>
+            <Grid.Col sm={12}>
+              <Paper withBorder p={"sm"}>
+                <Text>{question.example_low}</Text>
+
+                <Button
+                  fullWidth
+                  variant={question.select_low ? "filled" : "outline"}
+                  onClick={() => {
+                    console.log("low");
+                    dispatch(
+                      selectResponse({ id: question.id, selection: "low" })
+                    );
+                  }}
+                >
+                  Select
+                </Button>
+              </Paper>
+            </Grid.Col>
+            <Grid.Col sm={12}>
+              <Paper withBorder p={"sm"}>
+                <Text>{question.example_mid}</Text>
+                <Button
+                  fullWidth
+                  variant={question.select_mid ? "filled" : "outline"}
+                  onClick={() => {
+                    console.log("mid");
+                    dispatch(
+                      selectResponse({ id: question.id, selection: "mid" })
+                    );
+                  }}
+                >
+                  Select
+                </Button>{" "}
+              </Paper>
+            </Grid.Col>
+            <Grid.Col sm={12}>
+              <Paper withBorder p={"sm"}>
+                <Text>{question.example_high}</Text>
+
+                <Button
+                  fullWidth
+                  variant={question.select_high ? "filled" : "outline"}
+                  onClick={() => {
+                    console.log("high");
+                    dispatch(
+                      selectResponse({ id: question.id, selection: "high" })
+                    );
+                  }}
+                >
+                  Select
+                </Button>
+              </Paper>
             </Grid.Col>
           </Grid>
         </div>

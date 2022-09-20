@@ -1,6 +1,6 @@
 // Components
 import Question from "./Question";
-import { Center, Container, Stack } from "@mantine/core";
+import { Button, Center, Container, Stack } from "@mantine/core";
 
 // Types
 import { QuestionType } from "../../types";
@@ -29,6 +29,11 @@ function QuestionList() {
               return <Question key={question.id} question={question} />;
             }
           })}
+
+          {/* Submit Button */}
+          <Center>
+            <Button type="submit">Submit</Button>
+          </Center>
         </Stack>
       );
     }
