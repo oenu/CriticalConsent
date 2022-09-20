@@ -1,30 +1,41 @@
-import { useEffect, useState } from "react";
 import {
   AppShell,
-  Navbar,
-  Header,
-  Footer,
-  Aside,
-  Text,
-  MediaQuery,
   Burger,
-  useMantineTheme,
   Container,
+  Header,
+  MediaQuery,
+  Navbar,
+  NavLink,
+  Title,
+  useMantineTheme,
 } from "@mantine/core";
+import { useEffect, useState } from "react";
 
-import QuestionList from "./features/question/QuestionList";
+// React Router
+import { Link, Outlet } from "react-router-dom";
+import {
+  closeBurgerMenu,
+  selectBurgerMenuOpen,
+  toggleBurgerMenu,
+} from "./features/app/appSlice";
 
 // Redux
 import {
-  getQuestionsStatus,
   fetchQuestionsAsync,
+  getQuestionsStatus,
 } from "./features/question/questionSlice";
 import { useAppDispatch, useAppSelector } from "./redux/hooks";
 
-export default function AppShellDemo() {
+export default function App() {
+  // Theme from Mantine Package
   const theme = useMantineTheme();
-  const [opened, setOpened] = useState(false);
+
+  // Redux wrapper for dispatch
   const dispatch = useAppDispatch();
+
+  // Whether the burger menu is open
+  const burgerOpen = useAppSelector(selectBurgerMenuOpen);
+
   const questionStatus = useAppSelector(getQuestionsStatus);
   useEffect(() => {
     if (questionStatus === "idle") {
@@ -48,22 +59,38 @@ export default function AppShellDemo() {
         <Navbar
           p="md"
           hiddenBreakpoint="sm"
-          hidden={!opened}
-          width={{ sm: 200, lg: 300 }}
+          hidden={!burgerOpen}
+          width={{ sm: 150, lg: 150 }}
         >
-          <Navbar.Section>thing1</Navbar.Section>
-          <Navbar.Section>thing2</Navbar.Section>
-          <Navbar.Section>thing3</Navbar.Section>
           <Navbar.Section grow mt="md">
-            Links
+            <NavLink
+              label="Home"
+              active={location.pathname === "/"}
+              component={Link}
+              to="/"
+              onClick={() => dispatch(closeBurgerMenu())}
+            />
+            <NavLink
+              label="New"
+              active={location.pathname === "/survey"}
+              component={Link}
+              to="/survey"
+              onClick={() => dispatch(closeBurgerMenu())}
+            />
           </Navbar.Section>
-          <Navbar.Section> Footer section </Navbar.Section>
+          <Navbar.Section>
+            <NavLink
+              label="About"
+              active={location.pathname === "/about"}
+              onClick={() => dispatch(closeBurgerMenu())}
+            />
+            <NavLink
+              label="Contact"
+              active={location.pathname === "/contact"}
+              onClick={() => dispatch(closeBurgerMenu())}
+            />
+          </Navbar.Section>
         </Navbar>
-      }
-      footer={
-        <Footer height={60} p="md">
-          Footer
-        </Footer>
       }
       header={
         <Header height={70} p="md">
@@ -72,21 +99,21 @@ export default function AppShellDemo() {
           >
             <MediaQuery largerThan="sm" styles={{ display: "none" }}>
               <Burger
-                opened={opened}
-                onClick={() => setOpened((o) => !o)}
+                opened={burgerOpen}
+                onClick={() => dispatch(toggleBurgerMenu())}
                 size="sm"
                 color={theme.colors.gray[6]}
                 mr="xl"
               />
             </MediaQuery>
 
-            <Text>Critical Consent</Text>
+            <Title>Critical Consent</Title>
           </div>
         </Header>
       }
     >
       <Container>
-        <QuestionList></QuestionList>
+        <Outlet />
       </Container>
     </AppShell>
   );
