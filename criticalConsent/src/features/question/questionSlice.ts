@@ -40,12 +40,13 @@ const questionSlice = createSlice({
         question.select_low = action.payload.selection === "low";
         question.select_mid = action.payload.selection === "mid";
         question.select_high = action.payload.selection === "high";
+        question.answered = true;
       }
     },
 
     submitResponse: (state, action: PayloadAction<QuestionResponse>) => {
       // Submit selections to the database
-      console.log("submitResponse", action.payload);
+      console.debug("submitResponse", action.payload);
     },
   },
   extraReducers(builder) {
@@ -58,9 +59,9 @@ const questionSlice = createSlice({
         state.questions[question.id] = question;
       });
 
-      for (const [key, value] of Object.entries(state.questions)) {
-        console.log(key, value);
-      }
+      // for (const [key, value] of Object.entries(state.questions)) {
+      //   console.log(key, value);
+      // }
       // Set the status to succeeded
       state.status = "succeeded";
     });
@@ -76,13 +77,13 @@ export const fetchQuestionsAsync = createAsyncThunk(
   "questions/fetchQuestions",
   async (): Promise<QuestionType[]> => {
     try {
-      console.log("fetching questions");
+      console.debug("fetching questions");
       const { data, error } = await supabase.from("questions");
       if (error) {
-        console.log("error fetching questions", error);
+        console.warn("error fetching questions", error);
         throw error;
       } else {
-        console.log("fetched questions", data);
+        console.debug("fetched questions", data);
         return data;
       }
     } catch (error) {
