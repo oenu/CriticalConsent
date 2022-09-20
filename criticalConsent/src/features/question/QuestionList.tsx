@@ -7,19 +7,29 @@ import {
   selectAllQuestions,
   getQuestionsStatus,
   uploadResponse,
+  getHighlightUnanswered,
 } from "./questionSlice";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 
 function QuestionList() {
+  // Redux wrapper for dispatch
   const dispatch = useAppDispatch();
-  const questions = useAppSelector(selectAllQuestions);
+
+  // Status of the retrieval of questions from the Database
   const questionsStatus = useAppSelector(getQuestionsStatus);
+
+  // List of questions from the Database
+  const questions = useAppSelector(selectAllQuestions);
+
+  // Whether to highlight unanswered questions and show a warning
+  const highlightUnanswered = useAppSelector(getHighlightUnanswered);
+
+  // A list of questions in array form
   const questionList = Object.values(questions);
 
   // Warning Message if not all questions are answered
-
   const warningMessage = (
-    <Alert title="Oops!" color="red" hidden={false}>
+    <Alert title="Oops!" color="red" hidden={!highlightUnanswered}>
       Looks like you haven't answered all the questions yet. Please answer all
       of them before continuing.
     </Alert>
