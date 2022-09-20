@@ -33,7 +33,6 @@ const questionSlice = createSlice({
     selectResponse: (state, action: PayloadAction<QuestionResponse>) => {
       // Update the store with the selected response and remove other responses
       console.log("selectResponse", action.payload);
-
       // Update the question in the store with the selected response
       const question = state.questions[action.payload.id];
       if (question) {
@@ -43,10 +42,19 @@ const questionSlice = createSlice({
         question.answered = true;
       }
     },
+    uploadResponse: (state) => {
+      // Check if all questions have been answered
+      const allAnswered = Object.values(state.questions).every(
+        (question) => question?.answered
+      );
 
-    submitResponse: (state, action: PayloadAction<QuestionResponse>) => {
-      // Submit selections to the database
-      console.debug("submitResponse", action.payload);
+      if (allAnswered) {
+        // Upload the responses to the database
+        console.log("all answered");
+      } else {
+        // Show an error message
+        console.log("not all answered");
+      }
     },
   },
   extraReducers(builder) {
@@ -100,7 +108,7 @@ export const getQuestionsStatus = (state: RootState) => state.questions.status;
 export const getQuestionsError = (state: RootState) => state.questions.error;
 
 // Export reducer actions
-export const { selectResponse, submitResponse } = questionSlice.actions;
+export const { selectResponse, uploadResponse } = questionSlice.actions;
 
 // Export reducer
 export default questionSlice.reducer;
