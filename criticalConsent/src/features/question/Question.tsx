@@ -27,7 +27,7 @@ function Question({ question }: { question: QuestionType }) {
   // Detect if the screen is small
   const mobileView = useMediaQuery("(max-width: 1200px)");
 
-  // Colour to highlight unanswered questions
+  // Color to highlight unanswered questions
   const highlightColor = "red";
 
   return (
