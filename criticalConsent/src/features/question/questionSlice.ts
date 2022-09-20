@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../../redux/store";
 
-import { QuestionType } from "../../types";
+import { QuestionType, UploadType } from "../../types";
 import { supabase } from "../../utils/supabaseClient";
 
 // Define a type for the slice state
@@ -11,6 +11,9 @@ export interface QuestionState {
   };
   status: "idle" | "loading" | "succeeded" | "failed";
   error: string | null;
+  highlightUnanswered: boolean;
+  groupId: number;
+  nsfw: boolean;
 }
 
 // Define the initial state using the QuestionState type
@@ -18,6 +21,9 @@ const initialState: QuestionState = {
   questions: [],
   status: "idle",
   error: null,
+  highlightUnanswered: false,
+  groupId: 1, // TODO: #1 change this to be based on link
+  nsfw: false, // TODO: #2 Change this to be based on group
 };
 
 export interface QuestionResponse {
@@ -33,19 +39,53 @@ const questionSlice = createSlice({
     selectResponse: (state, action: PayloadAction<QuestionResponse>) => {
       // Update the store with the selected response and remove other responses
       console.log("selectResponse", action.payload);
-
       // Update the question in the store with the selected response
       const question = state.questions[action.payload.id];
       if (question) {
         question.select_low = action.payload.selection === "low";
         question.select_mid = action.payload.selection === "mid";
         question.select_high = action.payload.selection === "high";
+        question.answered = true;
       }
     },
+    uploadResponse: (state) => {
+      // Check if all questions have been answered
+      const allAnswered = Object.values(state.questions).every(
+        (question) => question?.answered
+      );
+      if (allAnswered) {
+        // Upload the responses to the database
+        console.log("all answered");
+        state.highlightUnanswered = false;
 
-    submitResponse: (state, action: PayloadAction<QuestionResponse>) => {
-      // Submit selections to the database
-      console.log("submitResponse", action.payload);
+        // Format the response to match the UploadType
+        const formattedResponse = Object.values(state.questions).map(
+          (question) => {
+            if (question) {
+              return {
+                question_id: question.id,
+                select_low: question.select_low,
+                select_mid: question.select_mid,
+                select_high: question.select_high,
+                answered: question.answered,
+                group_id: state.groupId,
+              };
+            }
+          }
+        );
+
+        // Upload the response to the database
+        supabase
+          .from("responses")
+          .insert(formattedResponse)
+          .then((res) => {
+            console.log("res", res);
+          });
+      } else {
+        // Highlight the unanswered questions
+        console.log("not all answered");
+        state.highlightUnanswered = true;
+      }
     },
   },
   extraReducers(builder) {
@@ -57,10 +97,6 @@ const questionSlice = createSlice({
       action.payload.forEach((question) => {
         state.questions[question.id] = question;
       });
-
-      for (const [key, value] of Object.entries(state.questions)) {
-        console.log(key, value);
-      }
       // Set the status to succeeded
       state.status = "succeeded";
     });
@@ -76,13 +112,13 @@ export const fetchQuestionsAsync = createAsyncThunk(
   "questions/fetchQuestions",
   async (): Promise<QuestionType[]> => {
     try {
-      console.log("fetching questions");
+      console.debug("fetching questions");
       const { data, error } = await supabase.from("questions");
       if (error) {
-        console.log("error fetching questions", error);
+        console.warn("error fetching questions", error);
         throw error;
       } else {
-        console.log("fetched questions", data);
+        console.debug("fetched questions", data);
         return data;
       }
     } catch (error) {
@@ -97,9 +133,11 @@ export const selectAllQuestions = (state: RootState) =>
   state.questions.questions;
 export const getQuestionsStatus = (state: RootState) => state.questions.status;
 export const getQuestionsError = (state: RootState) => state.questions.error;
+export const getHighlightUnanswered = (state: RootState) =>
+  state.questions.highlightUnanswered;
 
 // Export reducer actions
-export const { selectResponse, submitResponse } = questionSlice.actions;
+export const { selectResponse, uploadResponse } = questionSlice.actions;
 
 // Export reducer
 export default questionSlice.reducer;

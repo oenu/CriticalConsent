@@ -1,51 +1,94 @@
 // Components
 import Question from "./Question";
-import { Button, Center, Container, Stack } from "@mantine/core";
-
-// Types
-import { QuestionType } from "../../types";
+import { Alert, Button, Center, Container, Stack } from "@mantine/core";
 
 // Redux
-import { selectAllQuestions, getQuestionsStatus } from "./questionSlice";
-import { useAppSelector } from "../../redux/hooks";
+import {
+  selectAllQuestions,
+  getQuestionsStatus,
+  uploadResponse,
+  getHighlightUnanswered,
+} from "./questionSlice";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 
 function QuestionList() {
-  const questions = useAppSelector(selectAllQuestions);
+  // Redux wrapper for dispatch
+  const dispatch = useAppDispatch();
+
+  // Status of the retrieval of questions from the Database
   const questionsStatus = useAppSelector(getQuestionsStatus);
 
+  // List of questions from the Database
+  const questions = useAppSelector(selectAllQuestions);
+
+  // Whether to highlight unanswered questions and show a warning
+  const highlightUnanswered = useAppSelector(getHighlightUnanswered);
+
+  // A list of questions in array form
   const questionList = Object.values(questions);
 
-  let content: JSX.Element[] | JSX.Element | null = null;
-  if (questionsStatus === "loading") {
-    content = <div>Loading...</div>;
-  } else if (questionsStatus === "succeeded") {
-    if (questions === null) {
-      content = <div>No questions found</div>;
-    } else {
-      content = (
-        <Stack style={{ minWidth: "80vw" }}>
-          {questionList.map((question) => {
-            if (question !== null) {
-              return <Question key={question.id} question={question} />;
-            }
-          })}
+  // Warning Message if not all questions are answered
+  const warningMessage = (
+    <Alert title="Oops!" color="red" hidden={!highlightUnanswered}>
+      Looks like you haven't answered all the questions yet. Please answer all
+      of them before continuing.
+    </Alert>
+  );
 
-          {/* Submit Button */}
-          <Center>
-            <Button type="submit">Submit</Button>
-          </Center>
-        </Stack>
+  // Type definition for the question list content
+  let content: JSX.Element[] | JSX.Element | null = null;
+
+  switch (questionsStatus) {
+    // If the questions are loading, show a loading message
+    case "loading":
+      content = <div>Loading...</div>;
+      break;
+
+    // If there are no questions, show a message
+    case "succeeded":
+      if (questionList.length === 0) {
+        content = <div>There are no questions to show.</div>;
+      } else {
+        // If there are questions, show them
+        content = (
+          <Stack style={{ minWidth: "80vw" }}>
+            {questionList.map((question) => {
+              if (question !== null) {
+                return <Question key={question.id} question={question} />;
+              }
+            })}
+            <Center>{warningMessage}</Center>
+            {/* Submit Button */}
+            <Center>
+              <Button
+                onClick={() => {
+                  dispatch(uploadResponse());
+                }}
+                type="submit"
+              >
+                Submit
+              </Button>
+            </Center>
+          </Stack>
+        );
+      }
+      break;
+
+    // If there is an error, show a message
+    case "failed":
+      content = (
+        <div data-testid="errorMessage">
+          Something went wrong, please contact me on{" "}
+          <a href="https://twitter.com/_a_nb">twitter</a> or try again later.
+        </div>
       );
-    }
-  } else if (questionsStatus === "failed") {
-    content = (
-      <div data-testid="errorMessage">
-        Something went wrong, please contact me on{" "}
-        <a href="https://twitter.com/_a_nb">twitter</a> or try again later.
-      </div>
-    );
-  } else {
-    content = <div>No Question Status Provided</div>;
+      break;
+
+    // If something else happens, show a message
+    default:
+      content = (
+        <div>Something went wrong in a way that wasn't planned for</div>
+      );
   }
 
   return <Center>{content}</Center>;

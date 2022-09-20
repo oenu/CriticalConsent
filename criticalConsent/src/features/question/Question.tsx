@@ -12,16 +12,24 @@ import {
   Paper,
 } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
-import { useAppDispatch } from "../../redux/hooks";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { QuestionType } from "../../types";
 
-import { selectResponse } from "./questionSlice";
+import { getHighlightUnanswered, selectResponse } from "./questionSlice";
 
 function Question({ question }: { question: QuestionType }) {
+  // Redux wrapper for dispatch
   const dispatch = useAppDispatch();
 
+  // Whether to highlight unanswered questions
+  const highlightUnanswered = useAppSelector(getHighlightUnanswered);
+
+  // Detect if the screen is small
   const mobileView = useMediaQuery("(max-width: 1200px)");
-  console.log(mobileView);
+
+  // Color to highlight unanswered questions
+  const highlightColor = "red";
+
   return (
     <Card shadow="sm" p="lg" radius="md" mx="md" withBorder>
       <Card.Section p={"lg"}>
@@ -47,9 +55,14 @@ function Question({ question }: { question: QuestionType }) {
             <Grid.Col lg={4}>
               <Button
                 fullWidth
+                color={
+                  highlightUnanswered && !question.answered
+                    ? highlightColor
+                    : ""
+                }
                 variant={question.select_low ? "filled" : "outline"}
                 onClick={() => {
-                  console.log("low");
+                  console.debug(question.id, "low");
                   dispatch(
                     selectResponse({ id: question.id, selection: "low" })
                   );
@@ -61,9 +74,14 @@ function Question({ question }: { question: QuestionType }) {
             <Grid.Col lg={4}>
               <Button
                 fullWidth
+                color={
+                  highlightUnanswered && !question.answered
+                    ? highlightColor
+                    : ""
+                }
                 variant={question.select_mid ? "filled" : "outline"}
                 onClick={() => {
-                  console.log("mid");
+                  console.debug(question.id, "mid");
                   dispatch(
                     selectResponse({ id: question.id, selection: "mid" })
                   );
@@ -75,9 +93,14 @@ function Question({ question }: { question: QuestionType }) {
             <Grid.Col lg={4}>
               <Button
                 fullWidth
+                color={
+                  highlightUnanswered && !question.answered
+                    ? highlightColor
+                    : ""
+                }
                 variant={question.select_high ? "filled" : "outline"}
                 onClick={() => {
-                  console.log("high");
+                  console.debug(question.id, "high");
                   dispatch(
                     selectResponse({ id: question.id, selection: "high" })
                   );
@@ -98,9 +121,15 @@ function Question({ question }: { question: QuestionType }) {
 
                 <Button
                   fullWidth
+                  mt={"sm"}
+                  color={
+                    highlightUnanswered && !question.answered
+                      ? highlightColor
+                      : ""
+                  }
                   variant={question.select_low ? "filled" : "outline"}
                   onClick={() => {
-                    console.log("low");
+                    console.debug(question.id, "low");
                     dispatch(
                       selectResponse({ id: question.id, selection: "low" })
                     );
@@ -115,9 +144,15 @@ function Question({ question }: { question: QuestionType }) {
                 <Text>{question.example_mid}</Text>
                 <Button
                   fullWidth
+                  mt={"sm"}
+                  color={
+                    highlightUnanswered && !question.answered
+                      ? highlightColor
+                      : ""
+                  }
                   variant={question.select_mid ? "filled" : "outline"}
                   onClick={() => {
-                    console.log("mid");
+                    console.debug(question.id, "mid");
                     dispatch(
                       selectResponse({ id: question.id, selection: "mid" })
                     );
@@ -133,9 +168,15 @@ function Question({ question }: { question: QuestionType }) {
 
                 <Button
                   fullWidth
+                  mt={"sm"}
+                  color={
+                    highlightUnanswered && !question.answered
+                      ? highlightColor
+                      : ""
+                  }
                   variant={question.select_high ? "filled" : "outline"}
                   onClick={() => {
-                    console.log("high");
+                    console.debug(question.id, "high");
                     dispatch(
                       selectResponse({ id: question.id, selection: "high" })
                     );
