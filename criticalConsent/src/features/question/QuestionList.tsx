@@ -32,7 +32,22 @@ function QuestionList() {
 
           {/* Submit Button */}
           <Center>
-            <Button type="submit">Submit</Button>
+            <Button
+              onClick={() => {
+                // Check if all questions have been answered and if so, submit
+                console.debug("submit");
+                if (
+                  questionList.every((question) => question?.answered === true)
+                ) {
+                  console.debug("all answered");
+                } else {
+                  console.debug("not all answered");
+                }
+              }}
+              type="submit"
+            >
+              Submit
+            </Button>
           </Center>
         </Stack>
       );
