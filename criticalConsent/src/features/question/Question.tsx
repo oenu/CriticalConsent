@@ -21,7 +21,7 @@ function Question({ question }: { question: QuestionType }) {
   const dispatch = useAppDispatch();
 
   const mobileView = useMediaQuery("(max-width: 1200px)");
-  console.log(mobileView);
+
   return (
     <Card shadow="sm" p="lg" radius="md" mx="md" withBorder>
       <Card.Section p={"lg"}>
@@ -49,7 +49,7 @@ function Question({ question }: { question: QuestionType }) {
                 fullWidth
                 variant={question.select_low ? "filled" : "outline"}
                 onClick={() => {
-                  console.log("low");
+                  console.debug(question.id, "low");
                   dispatch(
                     selectResponse({ id: question.id, selection: "low" })
                   );
@@ -63,7 +63,7 @@ function Question({ question }: { question: QuestionType }) {
                 fullWidth
                 variant={question.select_mid ? "filled" : "outline"}
                 onClick={() => {
-                  console.log("mid");
+                  console.debug(question.id, "mid");
                   dispatch(
                     selectResponse({ id: question.id, selection: "mid" })
                   );
@@ -77,7 +77,7 @@ function Question({ question }: { question: QuestionType }) {
                 fullWidth
                 variant={question.select_high ? "filled" : "outline"}
                 onClick={() => {
-                  console.log("high");
+                  console.debug(question.id, "high");
                   dispatch(
                     selectResponse({ id: question.id, selection: "high" })
                   );
@@ -100,7 +100,7 @@ function Question({ question }: { question: QuestionType }) {
                   fullWidth
                   variant={question.select_low ? "filled" : "outline"}
                   onClick={() => {
-                    console.log("low");
+                    console.debug(question.id, "low");
                     dispatch(
                       selectResponse({ id: question.id, selection: "low" })
                     );
@@ -117,7 +117,7 @@ function Question({ question }: { question: QuestionType }) {
                   fullWidth
                   variant={question.select_mid ? "filled" : "outline"}
                   onClick={() => {
-                    console.log("mid");
+                    console.debug(question.id, "mid");
                     dispatch(
                       selectResponse({ id: question.id, selection: "mid" })
                     );
@@ -135,7 +135,7 @@ function Question({ question }: { question: QuestionType }) {
                   fullWidth
                   variant={question.select_high ? "filled" : "outline"}
                   onClick={() => {
-                    console.log("high");
+                    console.debug(question.id, "high");
                     dispatch(
                       selectResponse({ id: question.id, selection: "high" })
                     );
