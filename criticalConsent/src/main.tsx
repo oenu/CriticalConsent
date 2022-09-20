@@ -10,6 +10,13 @@ export const store = setupStore();
 
 // Mantine
 import { MantineProvider, GlobalStyles } from "@mantine/core";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+
+// Pages
+import Landing from "./pages/landing/Landing";
+import Register from "./pages/register/Register";
+import Survey from "./pages/survey/Survey";
+import NotFound from "./pages/404/NotFound";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
@@ -21,7 +28,16 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
           headings: { fontFamily: "Greycliff CF, sans-serif" },
         }}
       >
-        <App />
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<App />}>
+              {/* <Route path="/about" element={<About />} /> */}
+              <Route path="/register" element={<Register />} />
+              <Route path="/survey" element={<Survey />} />
+              <Route path="*" element={<NotFound />} />
+            </Route>
+          </Routes>
+        </BrowserRouter>
       </MantineProvider>
     </Provider>
   </React.StrictMode>
