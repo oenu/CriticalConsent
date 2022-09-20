@@ -1,34 +1,93 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import './App.css'
+import { useEffect, useState } from "react";
+import {
+  AppShell,
+  Navbar,
+  Header,
+  Footer,
+  Aside,
+  Text,
+  MediaQuery,
+  Burger,
+  useMantineTheme,
+  Container,
+} from "@mantine/core";
 
-function App() {
-  const [count, setCount] = useState(0)
+import QuestionList from "./features/question/QuestionList";
+
+// Redux
+import {
+  getQuestionsStatus,
+  fetchQuestionsAsync,
+} from "./features/question/questionSlice";
+import { useAppDispatch, useAppSelector } from "./redux/hooks";
+
+export default function AppShellDemo() {
+  const theme = useMantineTheme();
+  const [opened, setOpened] = useState(false);
+  const dispatch = useAppDispatch();
+  const questionStatus = useAppSelector(getQuestionsStatus);
+  useEffect(() => {
+    if (questionStatus === "idle") {
+      dispatch(fetchQuestionsAsync());
+    }
+  }, [questionStatus, dispatch]);
 
   return (
-    <div className="App">
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src="/vite.svg" className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </div>
-  )
-}
+    <AppShell
+      styles={{
+        main: {
+          background:
+            theme.colorScheme === "dark"
+              ? theme.colors.dark[8]
+              : theme.colors.gray[0],
+        },
+      }}
+      navbarOffsetBreakpoint="sm"
+      asideOffsetBreakpoint="sm"
+      navbar={
+        <Navbar
+          p="md"
+          hiddenBreakpoint="sm"
+          hidden={!opened}
+          width={{ sm: 200, lg: 300 }}
+        >
+          <Navbar.Section>thing1</Navbar.Section>
+          <Navbar.Section>thing2</Navbar.Section>
+          <Navbar.Section>thing3</Navbar.Section>
+          <Navbar.Section grow mt="md">
+            Links
+          </Navbar.Section>
+          <Navbar.Section> Footer section </Navbar.Section>
+        </Navbar>
+      }
+      footer={
+        <Footer height={60} p="md">
+          Footer
+        </Footer>
+      }
+      header={
+        <Header height={70} p="md">
+          <div
+            style={{ display: "flex", alignItems: "center", height: "100%" }}
+          >
+            <MediaQuery largerThan="sm" styles={{ display: "none" }}>
+              <Burger
+                opened={opened}
+                onClick={() => setOpened((o) => !o)}
+                size="sm"
+                color={theme.colors.gray[6]}
+                mr="xl"
+              />
+            </MediaQuery>
 
-export default App
+            <Text>Critical Consent</Text>
+          </div>
+        </Header>
+      }
+    >
+      <Container>
+        <QuestionList></QuestionList>
+      </Container>
+    </AppShell>
+  );
+}
