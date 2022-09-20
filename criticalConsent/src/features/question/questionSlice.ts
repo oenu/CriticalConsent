@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../../redux/store";
 
-import { QuestionType } from "../../types";
+import { QuestionType, UploadType } from "../../types";
 import { supabase } from "../../utils/supabaseClient";
 
 // Define a type for the slice state
@@ -12,6 +12,8 @@ export interface QuestionState {
   status: "idle" | "loading" | "succeeded" | "failed";
   error: string | null;
   highlightUnanswered: boolean;
+  groupId: number;
+  nsfw: boolean;
 }
 
 // Define the initial state using the QuestionState type
@@ -20,6 +22,8 @@ const initialState: QuestionState = {
   status: "idle",
   error: null,
   highlightUnanswered: false,
+  groupId: 1, // TODO: #1 change this to be based on link
+  nsfw: false, // TODO: #2 Change this to be based on group
 };
 
 export interface QuestionResponse {
@@ -53,6 +57,30 @@ const questionSlice = createSlice({
         // Upload the responses to the database
         console.log("all answered");
         state.highlightUnanswered = false;
+
+        // Format the response to match the UploadType
+        const formattedResponse = Object.values(state.questions).map(
+          (question) => {
+            if (question) {
+              return {
+                question_id: question.id,
+                select_low: question.select_low,
+                select_mid: question.select_mid,
+                select_high: question.select_high,
+                answered: question.answered,
+                group_id: state.groupId,
+              };
+            }
+          }
+        );
+
+        // Upload the response to the database
+        supabase
+          .from("responses")
+          .insert(formattedResponse)
+          .then((res) => {
+            console.log("res", res);
+          });
       } else {
         // Highlight the unanswered questions
         console.log("not all answered");
