@@ -1,3 +1,6 @@
+import { useEffect, useState } from "react";
+
+// Mantine Components
 import {
   AppShell,
   Burger,
@@ -9,10 +12,9 @@ import {
   Title,
   useMantineTheme,
 } from "@mantine/core";
-import { useEffect, useState } from "react";
 
 // React Router
-import { Link, Outlet } from "react-router-dom";
+import { Link, Outlet, useLocation } from "react-router-dom";
 import {
   closeBurgerMenu,
   selectBurgerMenuOpen,
@@ -27,6 +29,9 @@ import {
 import { useAppDispatch, useAppSelector } from "./redux/hooks";
 
 export default function App() {
+  // Watch current location for changes
+  const location = useLocation();
+
   // Theme from Mantine Package
   const theme = useMantineTheme();
 
@@ -71,7 +76,14 @@ export default function App() {
               onClick={() => dispatch(closeBurgerMenu())}
             />
             <NavLink
-              label="New"
+              label="Register"
+              active={location.pathname === "/register"}
+              component={Link}
+              to="/register"
+              onClick={() => dispatch(closeBurgerMenu())}
+            />
+            <NavLink
+              label="Survey"
               active={location.pathname === "/survey"}
               component={Link}
               to="/survey"
