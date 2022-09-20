@@ -11,6 +11,7 @@ export interface QuestionState {
   };
   status: "idle" | "loading" | "succeeded" | "failed";
   error: string | null;
+  highlightUnanswered: boolean;
 }
 
 // Define the initial state using the QuestionState type
@@ -18,6 +19,7 @@ const initialState: QuestionState = {
   questions: [],
   status: "idle",
   error: null,
+  highlightUnanswered: false,
 };
 
 export interface QuestionResponse {
@@ -47,13 +49,14 @@ const questionSlice = createSlice({
       const allAnswered = Object.values(state.questions).every(
         (question) => question?.answered
       );
-
       if (allAnswered) {
         // Upload the responses to the database
         console.log("all answered");
+        state.highlightUnanswered = false;
       } else {
-        // Show an error message
+        // Highlight the unanswered questions
         console.log("not all answered");
+        state.highlightUnanswered = true;
       }
     },
   },
@@ -66,10 +69,6 @@ const questionSlice = createSlice({
       action.payload.forEach((question) => {
         state.questions[question.id] = question;
       });
-
-      // for (const [key, value] of Object.entries(state.questions)) {
-      //   console.log(key, value);
-      // }
       // Set the status to succeeded
       state.status = "succeeded";
     });
@@ -106,6 +105,8 @@ export const selectAllQuestions = (state: RootState) =>
   state.questions.questions;
 export const getQuestionsStatus = (state: RootState) => state.questions.status;
 export const getQuestionsError = (state: RootState) => state.questions.error;
+export const getHighlightUnanswered = (state: RootState) =>
+  state.questions.highlightUnanswered;
 
 // Export reducer actions
 export const { selectResponse, uploadResponse } = questionSlice.actions;
