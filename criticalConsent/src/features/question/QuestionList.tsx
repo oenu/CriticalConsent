@@ -60,8 +60,6 @@ function QuestionList() {
       if (questionList.length === 0) {
         content = <div>There are no questions to show.</div>;
       } else {
-        // If there are questions, show them
-
         // Break down the list of questions into groups based on the question category
         const questionGroups = questionList.reduce((groups: any, question) => {
           const category = question?.category;
@@ -76,8 +74,6 @@ function QuestionList() {
           groups[category].push(question);
           return groups;
         }, {});
-
-        console.log(questionGroups);
 
         content = (
           <Stack style={{ minWidth: "80vw" }}>
