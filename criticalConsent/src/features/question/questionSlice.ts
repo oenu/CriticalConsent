@@ -1,3 +1,4 @@
+import { QuestionCategories, QuestionTypes } from "./../../types.d";
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../../redux/store";
 
@@ -29,6 +30,11 @@ const initialState: QuestionState = {
 export interface QuestionResponse {
   id: number;
   selection: "low" | "mid" | "high";
+}
+
+export interface OptInResponse {
+  id: number;
+  opt_in: boolean;
 }
 
 // Import initial state and create a thunk to fetch data from the API
@@ -87,6 +93,14 @@ const questionSlice = createSlice({
         state.highlightUnanswered = true;
       }
     },
+    setOptIn(state, action: PayloadAction<OptInResponse>) {
+      // Set the opt in value for the question
+      console.log("setOptIn", action.payload);
+      const question = state.questions[action.payload.id];
+      if (question) {
+        question.opt_in = action.payload.opt_in;
+      }
+    },
   },
   extraReducers(builder) {
     builder.addCase(fetchQuestionsAsync.pending, (state, action) => {
@@ -96,6 +110,13 @@ const questionSlice = createSlice({
       // Add any fetched questions to the mapped questions object
       action.payload.forEach((question) => {
         state.questions[question.id] = question;
+        // Check if the question is a select type, if so set the answered property to false.
+        // This is because the other types of question are answered by default.
+        if (question.type === QuestionTypes.select) {
+          question.answered = false;
+        } else {
+          question.answered = true;
+        }
       });
       // Set the status to succeeded
       state.status = "succeeded";
@@ -137,7 +158,8 @@ export const getHighlightUnanswered = (state: RootState) =>
   state.questions.highlightUnanswered;
 
 // Export reducer actions
-export const { selectResponse, uploadResponse } = questionSlice.actions;
+export const { selectResponse, uploadResponse, setOptIn } =
+  questionSlice.actions;
 
 // Export reducer
 export default questionSlice.reducer;
