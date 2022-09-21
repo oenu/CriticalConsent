@@ -1,23 +1,17 @@
 // Components
+import { Alert, Button, Center, Divider, Stack, Title } from "@mantine/core";
 import Question from "./Question";
-import {
-  Alert,
-  Button,
-  Center,
-  Container,
-  Divider,
-  Stack,
-  Title,
-} from "@mantine/core";
 
 // Redux
-import {
-  selectAllQuestions,
-  getQuestionsStatus,
-  uploadResponse,
-  getHighlightUnanswered,
-} from "./questionSlice";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
+import {
+  getHighlightUnanswered,
+  getQuestionsStatus,
+  selectAllQuestions,
+  uploadResponse,
+} from "./questionSlice";
+
+// Types
 import { QuestionType } from "../../types";
 
 function QuestionList() {
