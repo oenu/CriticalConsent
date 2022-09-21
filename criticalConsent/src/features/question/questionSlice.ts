@@ -114,6 +114,8 @@ const questionSlice = createSlice({
         // This is because the other types of question are answered by default.
         if (question.type === QuestionTypes.select) {
           question.answered = false;
+        } else {
+          question.answered = true;
         }
       });
       // Set the status to succeeded
