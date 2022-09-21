@@ -41,13 +41,6 @@ export default function App() {
   // Whether the burger menu is open
   const burgerOpen = useAppSelector(selectBurgerMenuOpen);
 
-  const questionStatus = useAppSelector(getQuestionsStatus);
-  useEffect(() => {
-    if (questionStatus === "idle") {
-      dispatch(fetchQuestionsAsync());
-    }
-  }, [questionStatus, dispatch]);
-
   return (
     <AppShell
       styles={{

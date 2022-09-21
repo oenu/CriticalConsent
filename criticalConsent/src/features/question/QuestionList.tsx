@@ -5,6 +5,7 @@ import Question from "./Question";
 // Redux
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import {
+  fetchQuestionsAsync,
   getHighlightUnanswered,
   getQuestionsStatus,
   selectAllQuestions,
@@ -13,6 +14,7 @@ import {
 
 // Types
 import { QuestionType } from "../../types";
+import { useEffect } from "react";
 
 function QuestionList() {
   // Redux wrapper for dispatch
@@ -37,6 +39,12 @@ function QuestionList() {
       of them before continuing.
     </Alert>
   );
+
+  useEffect(() => {
+    if (questionsStatus === "idle") {
+      dispatch(fetchQuestionsAsync());
+    }
+  }, [questionsStatus, dispatch]);
 
   // Type definition for the question list content
   let content: JSX.Element[] | JSX.Element | null = null;
