@@ -1,15 +1,18 @@
 // Components
+import { Alert, Button, Center, Divider, Stack, Title } from "@mantine/core";
 import Question from "./Question";
-import { Alert, Button, Center, Container, Stack } from "@mantine/core";
 
 // Redux
-import {
-  selectAllQuestions,
-  getQuestionsStatus,
-  uploadResponse,
-  getHighlightUnanswered,
-} from "./questionSlice";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
+import {
+  getHighlightUnanswered,
+  getQuestionsStatus,
+  selectAllQuestions,
+  uploadResponse,
+} from "./questionSlice";
+
+// Types
+import { QuestionType } from "../../types";
 
 function QuestionList() {
   // Redux wrapper for dispatch
@@ -50,13 +53,54 @@ function QuestionList() {
         content = <div>There are no questions to show.</div>;
       } else {
         // If there are questions, show them
+
+        // Break down the list of questions into groups based on the question category
+        const questionGroups = questionList.reduce((groups: any, question) => {
+          const category = question?.category;
+
+          if (category === undefined) {
+            return groups;
+          }
+
+          if (!groups[category]) {
+            groups[category] = [];
+          }
+          groups[category].push(question);
+          return groups;
+        }, {});
+
+        console.log(questionGroups);
+
         content = (
           <Stack style={{ minWidth: "80vw" }}>
-            {questionList.map((question) => {
+            <Title>General</Title>
+            {questionGroups["general"].map((question: QuestionType) => {
               if (question !== null) {
                 return <Question key={question.id} question={question} />;
               }
             })}
+
+            {/* For each sub category, show the category name and the list of questions */}
+            {Object.keys(questionGroups).map((category) => {
+              if (category !== "general") {
+                return (
+                  <div key={category}>
+                    <Divider mt={"xs"} mb={"md"} />
+                    <Title mb={"sm"} transform="capitalize">
+                      {category}
+                    </Title>
+                    {questionGroups[category].map((question: QuestionType) => {
+                      if (question !== null) {
+                        return (
+                          <Question key={question.id} question={question} />
+                        );
+                      }
+                    })}
+                  </div>
+                );
+              }
+            })}
+
             <Center>{warningMessage}</Center>
             {/* Submit Button */}
             <Center>
