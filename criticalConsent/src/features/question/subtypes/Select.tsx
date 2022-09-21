@@ -3,7 +3,7 @@ import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 import { QuestionType } from "../../../types";
 import { getHighlightUnanswered, selectResponse } from "../questionSlice";
 
-function SelectQuestion({
+function Select({
   question,
   mobileView,
 }: {
@@ -183,4 +183,4 @@ function SelectQuestion({
   );
 }
 
-export default SelectQuestion;
+export default Select;
