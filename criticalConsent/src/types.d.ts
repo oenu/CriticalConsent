@@ -1,8 +1,10 @@
 // Type definitions for criticalConsent
 
-// Type for questions from the database
+// Type for questions from the database extended with answered and selected properties
 export interface QuestionType {
   id: number;
+  type: "toggle" | "select" | "custom_response";
+  title: string;
   description: string;
   example_low: string;
   select_low: boolean;
@@ -12,7 +14,9 @@ export interface QuestionType {
   select_high: boolean;
   answered: boolean;
   nsfw: boolean;
-  category: string;
+  category: "sexual" | "graphic" | "offensive" | "phobic" | null;
+  custom_response: string;
+  opt_in: boolean;
 }
 
 // Tye for the group identifier from the database
