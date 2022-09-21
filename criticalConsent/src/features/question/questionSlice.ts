@@ -31,6 +31,11 @@ export interface QuestionResponse {
   selection: "low" | "mid" | "high";
 }
 
+export interface OptInResponse {
+  id: number;
+  opt_in: boolean;
+}
+
 // Import initial state and create a thunk to fetch data from the API
 const questionSlice = createSlice({
   name: "questions",
@@ -87,6 +92,14 @@ const questionSlice = createSlice({
         state.highlightUnanswered = true;
       }
     },
+    setOptIn(state, action: PayloadAction<OptInResponse>) {
+      // Set the opt in value for the question
+      console.log("setOptIn", action.payload);
+      const question = state.questions[action.payload.id];
+      if (question) {
+        question.opt_in = action.payload.opt_in;
+      }
+    },
   },
   extraReducers(builder) {
     builder.addCase(fetchQuestionsAsync.pending, (state, action) => {
@@ -137,7 +150,8 @@ export const getHighlightUnanswered = (state: RootState) =>
   state.questions.highlightUnanswered;
 
 // Export reducer actions
-export const { selectResponse, uploadResponse } = questionSlice.actions;
+export const { selectResponse, uploadResponse, setOptIn } =
+  questionSlice.actions;
 
 // Export reducer
 export default questionSlice.reducer;
