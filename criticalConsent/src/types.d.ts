@@ -1,9 +1,23 @@
 // Type definitions for criticalConsent
 
+// Enums
+export enum QuestionTypes {
+  toggle = "toggle",
+  select = "select",
+  custom_response = "custom_response",
+}
+
+export enum QuestionCategories {
+  sexual = "sexual",
+  graphic = "graphic",
+  offensive = "offensive",
+  phobic = "phobic",
+}
+
 // Type for questions from the database extended with answered and selected properties
 export interface QuestionType {
   id: number;
-  type: "toggle" | "select" | "custom_response";
+  type: QuestionTypes;
   title: string;
   description: string;
   example_low: string;
@@ -14,12 +28,12 @@ export interface QuestionType {
   select_high: boolean;
   answered: boolean;
   nsfw: boolean;
-  category: "sexual" | "graphic" | "offensive" | "phobic" | null;
+  category: QuestionCategories | null;
   custom_response: string;
   opt_in: boolean;
 }
 
-// Tye for the group identifier from the database
+// Type for the group identifier from the database
 export interface GroupType {
   id: number;
   name: string;
