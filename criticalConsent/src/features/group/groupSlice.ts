@@ -1,3 +1,4 @@
+import { supabase } from "./../../utils/supabaseClient";
 import { createSlice } from "@reduxjs/toolkit";
 
 export interface GroupState {
