@@ -13,7 +13,7 @@ export interface QuestionState {
   status: "idle" | "loading" | "succeeded" | "failed";
   error: string | null;
   highlightUnanswered: boolean;
-  groupId: number;
+  groupId: number | null;
   nsfw: boolean;
 }
 
@@ -23,7 +23,7 @@ const initialState: QuestionState = {
   status: "idle",
   error: null,
   highlightUnanswered: false,
-  groupId: 1, // TODO: #1 change this to be based on link
+  groupId: null, // TODO: #1 change this to be based on link
   nsfw: false, // TODO: #2 Change this to be based on group
 };
 
