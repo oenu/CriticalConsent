@@ -11,7 +11,7 @@ import { useAppDispatch } from "../../../redux/hooks";
 import { QuestionType } from "../../../types";
 import { setOptIn } from "../questionSlice";
 
-function ToggleQuestion({
+function Toggle({
   question,
   mobileView,
 }: {
@@ -64,7 +64,7 @@ function ToggleQuestion({
                           })
                         );
                       }}
-                    ></Switch>
+                    />
                   </Center>
                 </Grid.Col>
               </Grid>
@@ -112,7 +112,7 @@ function ToggleQuestion({
                           })
                         );
                       }}
-                    ></Switch>
+                    />
                   </Center>
                 </Grid.Col>
               </Grid>
@@ -124,4 +124,4 @@ function ToggleQuestion({
   );
 }
 
-export default ToggleQuestion;
+export default Toggle;
