@@ -128,7 +128,7 @@ export const fetchQuestionsAsync = createAsyncThunk(
   }
 );
 
-// Export constants for use in components
+// Export constants for selectors
 export const selectAllQuestions = (state: RootState) =>
   state.questions.questions;
 export const getQuestionsStatus = (state: RootState) => state.questions.status;
