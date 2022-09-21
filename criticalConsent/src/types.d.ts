@@ -12,6 +12,7 @@ export enum QuestionCategories {
   graphic = "graphic",
   offensive = "offensive",
   phobic = "phobic",
+  general = "general",
 }
 
 // Type for questions from the database extended with answered and selected properties
@@ -28,7 +29,7 @@ export interface QuestionType {
   select_high: boolean;
   answered: boolean;
   nsfw: boolean;
-  category: QuestionCategories | null;
+  category: QuestionCategories;
   custom_response: string;
   opt_in: boolean;
 }
