@@ -1,3 +1,4 @@
+import { QuestionCategories, QuestionTypes } from "./../../types.d";
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../../redux/store";
 
@@ -109,6 +110,11 @@ const questionSlice = createSlice({
       // Add any fetched questions to the mapped questions object
       action.payload.forEach((question) => {
         state.questions[question.id] = question;
+        // Check if the question is a select type, if so set the answered property to false.
+        // This is because the other types of question are answered by default.
+        if (question.type === QuestionTypes.select) {
+          question.answered = false;
+        }
       });
       // Set the status to succeeded
       state.status = "succeeded";
