@@ -73,6 +73,7 @@ const questionSlice = createSlice({
                 select_high: question.select_high,
                 answered: question.answered,
                 group_id: state.group_id,
+                opt_in: question.opt_in,
               };
             }
           }
