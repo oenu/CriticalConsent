@@ -1,8 +1,8 @@
-import { QuestionCategories, QuestionTypes } from "./../../types.d";
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../../redux/store";
+import { QuestionTypes } from "./../../types.d";
 
-import { QuestionType, UploadType } from "../../types";
+import { QuestionType } from "../../types";
 import { supabase } from "../../utils/supabaseClient";
 
 // Define a type for the slice state
@@ -13,8 +13,7 @@ export interface QuestionState {
   status: "idle" | "loading" | "succeeded" | "failed";
   error: string | null;
   highlightUnanswered: boolean;
-  groupId: number | null;
-  nsfw: boolean;
+  group_id: number | null;
 }
 
 // Define the initial state using the QuestionState type
@@ -23,8 +22,7 @@ const initialState: QuestionState = {
   status: "idle",
   error: null,
   highlightUnanswered: false,
-  groupId: null, // TODO: #1 change this to be based on link
-  nsfw: false, // TODO: #2 Change this to be based on group
+  group_id: null,
 };
 
 export interface QuestionResponse {
@@ -74,7 +72,7 @@ const questionSlice = createSlice({
                 select_mid: question.select_mid,
                 select_high: question.select_high,
                 answered: question.answered,
-                group_id: state.groupId,
+                group_id: state.group_id,
               };
             }
           }
@@ -100,6 +98,11 @@ const questionSlice = createSlice({
       if (question) {
         question.opt_in = action.payload.opt_in;
       }
+    },
+    setQuestionGroupId(state, action: PayloadAction<number>) {
+      // HACK: This is a hack to get the group id into the store as I am not sure how to access the group store here
+      // Set the group id in question state
+      state.group_id = action.payload;
     },
   },
   extraReducers(builder) {
@@ -158,7 +161,7 @@ export const getHighlightUnanswered = (state: RootState) =>
   state.questions.highlightUnanswered;
 
 // Export reducer actions
-export const { selectResponse, uploadResponse, setOptIn } =
+export const { selectResponse, uploadResponse, setOptIn, setQuestionGroupId } =
   questionSlice.actions;
 
 // Export reducer
