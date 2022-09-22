@@ -42,6 +42,29 @@ const groupSlice = createSlice({
     registerGroup: (state, action) => {
       console.debug("registerGroup", action.payload);
     },
+
+    // Set Group Question Categories
+    setGroupQuestionCategories: (state, action) => {
+      console.debug("setGroupQuestionCategories", action.payload);
+      switch (action.payload.category) {
+        case "graphic":
+          state.graphic_content = action.payload.value;
+          break;
+        case "offensive":
+          state.offensive_content = action.payload.value;
+          break;
+        case "phobic":
+          state.phobic_content = action.payload.value;
+          break;
+        case "sexual":
+          state.sexual_content = action.payload.value;
+          break;
+      }
+    },
+    setGroupAdultContent: (state, action) => {
+      console.debug("setGroupAdultContent", action.payload);
+      state.nsfw = action.payload;
+    },
   },
   extraReducers(builder) {
     builder.addCase(fetchGroupByIdAsync.pending, (state, action) => {
@@ -91,10 +114,21 @@ export const fetchGroupByIdAsync = createAsyncThunk(
 );
 
 // Export reducer actions
-export const { registerGroup, setGroup } = groupSlice.actions;
+export const { registerGroup, setGroup, setGroupQuestionCategories } =
+  groupSlice.actions;
 
 // Export constants for selectors
 export const getGroupId = (state: RootState) => state.group.id;
+export const getSelectedAdultCategories = (state: RootState) => {
+  return {
+    graphic_content: state.group.graphic_content || false,
+    offensive_content: state.group.offensive_content || false,
+    phobic_content: state.group.phobic_content || false,
+    sexual_content: state.group.sexual_content || false,
+  };
+};
+export const getShowAdultContent = (state: RootState) => state.group.nsfw;
+
 export const getGroupStatus = (state: RootState) => state.group.status;
 export const getGroupCategories = (state: RootState) => {
   let categories = [String(QuestionCategories.general)];
