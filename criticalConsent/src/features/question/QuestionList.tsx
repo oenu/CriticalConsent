@@ -15,6 +15,7 @@ import {
 // Types
 import { QuestionType } from "../../types";
 import { useEffect } from "react";
+import { getGroupCategories, getGroupId } from "../group/groupSlice";
 
 function QuestionList() {
   // Redux wrapper for dispatch
@@ -31,6 +32,9 @@ function QuestionList() {
 
   // A list of questions in array form
   const questionList = Object.values(questions);
+
+  // Array of strings corresponding to the categories the group wants to see
+  const groupCategories = useAppSelector(getGroupCategories);
 
   // Warning Message if not all questions are answered
   const warningMessage = (
@@ -61,47 +65,60 @@ function QuestionList() {
         content = <div>There are no questions to show.</div>;
       } else {
         // Break down the list of questions into groups based on the question category
-        const questionGroups = questionList.reduce((groups: any, question) => {
-          const category = question?.category;
+        const categorizedQuestions = questionList.reduce(
+          (groups: any, question) => {
+            const category = question?.category;
 
-          if (category === undefined) {
+            if (category === undefined) {
+              return groups;
+            }
+
+            if (!groups[category]) {
+              groups[category] = [];
+            }
+            groups[category].push(question);
             return groups;
-          }
-
-          if (!groups[category]) {
-            groups[category] = [];
-          }
-          groups[category].push(question);
-          return groups;
-        }, {});
+          },
+          {}
+        );
 
         content = (
           <Stack style={{ minWidth: "80vw" }}>
             <Title>General</Title>
-            {questionGroups["general"].map((question: QuestionType) => {
+            {categorizedQuestions["general"].map((question: QuestionType) => {
               if (question !== null) {
                 return <Question key={question.id} question={question} />;
               }
             })}
 
             {/* For each sub category, show the category name and the list of questions */}
-            {Object.keys(questionGroups).map((category) => {
+            {Object.keys(categorizedQuestions).map((category) => {
+              // Ignore the general category from the list of sub categories
               if (category !== "general") {
-                return (
-                  <div key={category}>
-                    <Divider mt={"xs"} mb={"md"} />
-                    <Title mb={"sm"} transform="capitalize">
-                      {category}
-                    </Title>
-                    {questionGroups[category].map((question: QuestionType) => {
-                      if (question !== null) {
-                        return (
-                          <Question key={question.id} question={question} />
-                        );
-                      }
-                    })}
-                  </div>
-                );
+                if (categorizedQuestions[category].length > 0) {
+                  if (Object.values(groupCategories).includes(category)) {
+                    return (
+                      <div key={category}>
+                        <Divider mt={"xs"} mb={"md"} />
+                        <Title mb={"sm"} transform="capitalize">
+                          {category}
+                        </Title>
+                        {categorizedQuestions[category].map(
+                          (question: QuestionType) => {
+                            if (question !== null) {
+                              return (
+                                <Question
+                                  key={question.id}
+                                  question={question}
+                                />
+                              );
+                            }
+                          }
+                        )}
+                      </div>
+                    );
+                  }
+                }
               }
             })}
 
