@@ -31,14 +31,6 @@ const appSlice = createSlice({
     closeBurgerMenu: (state) => {
       state.burgerMenuOpen = false;
     },
-    // Toggle whether to show adult content in survey
-    setShowAdultContent: (state, action: PayloadAction<boolean>) => {
-      state.showAdultContent = action.payload;
-    },
-    // Toggle whether survey creator has accepted adult disclaimer
-    setAcceptAdultContent: (state, action: PayloadAction<boolean>) => {
-      state.acceptAdultDisclaimer = action.payload;
-    },
   },
 });
 
