@@ -1,80 +1,153 @@
 import {
-  Container,
-  Center,
+  Button,
   Card,
+  Center,
+  Container,
+  Divider,
   Stack,
+  Switch,
   Text,
   TextInput,
-  Switch,
-  Button,
   Title,
-  Checkbox,
-  Box,
-  Paper,
-  Divider,
-  Alert,
 } from "@mantine/core";
-import React from "react";
+
 import {
-  selectAcceptAdultDisclaimer,
-  selectShowAdultContent,
-} from "../../features/app/appSlice";
+  getSelectedAdultCategories,
+  getShowAdultContent,
+  setGroupQuestionCategories,
+} from "../../features/group/groupSlice";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 
 function Register() {
   // Redux wrapper for dispatch
   const dispatch = useAppDispatch();
 
-  // Status of whether adult content is allowed
-  const allowAdultContent = useAppSelector(selectShowAdultContent);
+  // Status of which content categories are selected
+  const selectedAdultContent = useAppSelector(getSelectedAdultCategories);
 
-  // Status of whether the user has accepted the adult content disclaimer
-  const acceptAdultDisclaimer = useAppSelector(selectAcceptAdultDisclaimer);
+  // Status of whether to show adult content
+  const showAdultContent = useAppSelector(getShowAdultContent);
 
   return (
     <Container>
       <Center style={{ width: "100%" }}>
         <Card mx={"xl"} withBorder>
           <Stack align={"center"}>
-            <Title order={3}>Create Survey</Title>
-            <Text align={"center"}>
-              This survey will offer multiple versions of common DND scenarios
-              at different levels of intensity. Players are able to anonymously
-              select the level of intensity they are comfortable with which will
-              be combined to provide a inclusive experience for all players.
-            </Text>
+            <Title order={3}>New Survey</Title>
+            <TextInput label="Group Name" placeholder="Enter your group name" />
 
-            <TextInput
-              placeholder="Bold Adventurers"
-              label="Group Name"
-              required
-            />
-
-            <Text align={"center"}>
-              Oneshots and Adventurers League are meant to be played as fun and
-              casual events. Adult themes are not appropriate for these settings
-              and as such should not be used. If you are using this tool for a
-              home game you may want to include the option for players to opt in
-              to adult content.
-            </Text>
-            <Text>Include Adult Content?</Text>
-            <Switch label="Show adult content" radius="sm" size="sm" />
-            <Alert p="md" color={"red"} variant={"outline"}>
-              <Text weight={700} align={"center"}>
-                If you offer this option and a player opts in, you are
-                responsible for ensuring that the content is appropriate for the
-                player. If a player later chooses to opt out, you are
-                responsible for ensuring that the content is removed.
+            {/* Content toggles */}
+            <Stack>
+              <Text>
+                If a player indicates that they uncomfortable with included
+                content it should not be used in games
               </Text>
-              <Center>
-                <Checkbox
-                  mt={"lg"}
-                  label="I understand and agree"
-                  radius="sm"
-                  size="sm"
-                />
-              </Center>
-            </Alert>
+              <Switch
+                checked={showAdultContent || false}
+                onChange={(checked) => {
+                  console.log("Adult Content", checked.target.checked);
+                  dispatch(
+                    setGroupQuestionCategories({
+                      category: "graphic",
+                      value: checked.target.checked,
+                    })
+                  );
+                }}
+                value="graphic"
+                label="Include Graphic Content Questions"
+              />
+              <Text>Select topics to include in your survey</Text>
+              <Divider />
+              <Title order={3}>Graphic Content</Title>
+              <Text size={"xs"} italic>
+                Graphic content questions address depictions of extreme
+                violence, bodily damage sustained in combat or by torture,
+                themes of self harm, violence against animals, child
+                exploitation, cannibalism, and virulent diseases.
+              </Text>
+              <Switch
+                checked={selectedAdultContent.graphic_content}
+                onChange={(checked) => {
+                  console.log("Graphic Content", checked.target.checked);
+                  dispatch(
+                    setGroupQuestionCategories({
+                      category: "graphic",
+                      value: checked.target.checked,
+                    })
+                  );
+                }}
+                value="graphic"
+                label="Include Graphic Content Questions"
+              />
+              <Divider />
+              <Title order={3}>Sexual Content</Title>
+              <Text size={"xs"} italic>
+                Sexual content questions address depictions of sexual
+                intercourse, nudity, prostitution/sex work, sexualized
+                descriptions of characters, and descriptions of sexual assault.
+              </Text>
+
+              <Switch
+                checked={selectedAdultContent.sexual_content}
+                onChange={(checked) => {
+                  console.log("Sexual Content", checked.target.checked);
+                  dispatch(
+                    setGroupQuestionCategories({
+                      category: "sexual",
+                      value: checked.target.checked,
+                    })
+                  );
+                }}
+                value="sexual"
+                label="Include Sexual Content Questions"
+              />
+              <Divider />
+              <Title order={3}>Potentially Offensive Content</Title>
+              <Text size={"xs"} italic>
+                Potentially Offensive content questions address depictions of
+                racism, homophobia, transphobia, misogyny, extreme poverty,
+                slavery. The questions offer distinctions between wider themes
+                in a fantasy world and content directed at/from players.
+              </Text>
+              <Switch
+                checked={selectedAdultContent.offensive_content}
+                onChange={(checked) => {
+                  console.log("Offensive Content", checked.target.checked);
+                  dispatch(
+                    setGroupQuestionCategories({
+                      category: "offensive",
+                      value: checked.target.checked,
+                    })
+                  );
+                }}
+                value="offensive"
+                label="Include Potentially Offensive Content Questions"
+              />
+
+              <Divider />
+              <Title order={3}>Common Phobic Content</Title>
+              <Text size={"xs"} italic>
+                Common Phobic Content questions address depictions of spiders,
+                snakes, heights, and other common phobias.
+              </Text>
+
+              <Switch
+                checked={selectedAdultContent.phobic_content}
+                onChange={(checked) => {
+                  console.log("Phobic Content", checked.target.checked);
+                  dispatch(
+                    setGroupQuestionCategories({
+                      category: "phobic",
+                      value: checked.target.checked,
+                    })
+                  );
+                }}
+                value="phobic"
+                label="Include Common Phobic Content Questions"
+              />
+
+              <Divider />
+            </Stack>
             <Button>Create Survey</Button>
           </Stack>
         </Card>
