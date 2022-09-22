@@ -14,15 +14,32 @@ import {
 // React Router
 import { Link, useParams } from "react-router-dom";
 
+// Redux
+import { fetchGroupByIdAsync } from "../../features/group/groupSlice";
+import { setQuestionGroupId } from "../../features/question/questionSlice";
+import { useAppDispatch } from "../../redux/hooks";
+
 // Features
 import QuestionList from "../../features/question/QuestionList";
 
 export default function Survey() {
-  const { group_id } = useParams();
+  // Redux wrapper for dispatch
+  const dispatch = useAppDispatch();
 
+  // Get the group ID from the URL
+  const { group_id } = useParams();
   console.debug("group_id", group_id);
 
-  if (group_id === undefined) {
+  if (group_id !== undefined) {
+    // Check the group ID against the database and retrieve the group preferences
+    useEffect(() => {
+      dispatch(fetchGroupByIdAsync(parseInt(group_id))).then((res) => {
+        //HACK: This is a hack to get the group ID to update
+        dispatch(setQuestionGroupId(parseInt(group_id)));
+      });
+    }, [dispatch, group_id]);
+    return <QuestionList />;
+  } else {
     return (
       <Container>
         <Center style={{ width: "100%", height: "60vh" }}>
@@ -37,7 +54,5 @@ export default function Survey() {
         </Center>
       </Container>
     );
-  } else {
-    return <QuestionList />;
   }
 }

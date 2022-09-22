@@ -40,6 +40,10 @@ export interface GroupType {
   name: string;
   shortid: string;
   nsfw: boolean;
+  graphic_content: boolean;
+  offensive_content: boolean;
+  phobic_content: boolean;
+  sexual_content: boolean;
 }
 
 // Type for uploading a response to the database
