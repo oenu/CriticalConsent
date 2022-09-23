@@ -5,6 +5,8 @@ import {
   Center,
   Container,
   Divider,
+  List,
+  Modal,
   Overlay,
   Stack,
   Switch,
@@ -12,6 +14,7 @@ import {
   TextInput,
   Title,
 } from "@mantine/core";
+import { useMediaQuery } from "@mantine/hooks";
 
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 
@@ -27,11 +30,16 @@ import {
   setPasswordProtected,
   setPasswordWarning,
   setMatureContent,
+  selectDisclaimers,
+  setDisclaimerModalShown,
 } from "./registerSlice";
 
 function Register() {
   // Redux wrapper for dispatch
   const dispatch = useAppDispatch();
+
+  // Whether the app is being viewed on a mobile device
+  const mobileView = useMediaQuery("(max-width: 600px)");
 
   // Status of group name
   const { group_name, group_name_warning } = useAppSelector(selectGroupName);
@@ -47,8 +55,53 @@ function Register() {
   const { password_protected, password, password_warning } =
     useAppSelector(selectGroupPassword);
 
+  // Status of content disclaimers
+  const { disclaimer_modal, disclaimer_warning, disclaimers_accepted } =
+    useAppSelector(selectDisclaimers);
+
+  // Modal for content disclaimers
+  const disclaimerModal = (
+    <Modal
+      size="md"
+      fullScreen={mobileView}
+      trapFocus
+      centered
+      overlayOpacity={0.9}
+      overlayBlur={5}
+      withCloseButton={false}
+      opened={disclaimer_modal}
+      onClose={() => dispatch(setDisclaimerModalShown(false))}
+    >
+      <Title order={1}>Code of Conduct</Title>
+      <Title order={4}>
+        Before creating a survey you must agree to the following:
+      </Title>
+
+      <Stack>
+        <Alert>
+          Players are not bound to their responses. They have the right to
+          change what they consent to at any time without having to explain why.
+        </Alert>
+        <Alert>
+          If you are in any doubt about whether content is appropriate,
+          regardless of player responses to this survey, you must talk with your
+          players about it before continuing.
+        </Alert>
+
+        <Alert>If a player ignores the boundaries set by the group, you </Alert>
+        <Alert>Words</Alert>
+        <Alert>Words</Alert>
+        {/* <Title order={4}>
+          If you do not agree then continue no further and consider how your
+          style of game impacts your players.
+        </Title> */}
+      </Stack>
+    </Modal>
+  );
+
   return (
     <Container>
+      {disclaimerModal}
       <Card withBorder style={{ width: "100%" }} mb={"md"}>
         <Stack>
           <Title order={2}>Group Information</Title>
@@ -58,7 +111,6 @@ function Register() {
             placeholder="Consent Champions"
             withAsterisk
             required
-            defaultValue={group_name || ""}
             onBlur={(e) => {
               dispatch(setGroupName(e.currentTarget.value));
               if (e.currentTarget.value === "") {
@@ -97,7 +149,6 @@ function Register() {
           />
         </Stack>
       </Card>
-
       <Card withBorder style={{ width: "100%" }} my="md">
         {/* Card to explain mature content and enable it */}
         <Stack>
@@ -125,7 +176,6 @@ function Register() {
           />
         </Stack>
       </Card>
-
       <Card withBorder my="md">
         {/* Disable section if mature content is not allowed */}
         {showMatureContent ? null : <Overlay zIndex={5} />}
@@ -223,7 +273,17 @@ function Register() {
         </Stack>
       </Card>
       <Center>
-        <Button>Create Survey</Button>
+        <Button
+          disabled={
+            group_name_warning ||
+            password_warning ||
+            !group_name ||
+            (password_protected && !password)
+          }
+          onClick={() => dispatch(setDisclaimerModalShown(true))}
+        >
+          Create Survey
+        </Button>
       </Center>
     </Container>
   );
