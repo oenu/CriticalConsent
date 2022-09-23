@@ -32,6 +32,8 @@ import {
   setMatureContent,
   selectDisclaimers,
   setDisclaimerModalShown,
+  setDisclaimersAccepted,
+  uploadRegistration,
 } from "./registerSlice";
 
 function Register() {
@@ -62,45 +64,73 @@ function Register() {
   // Modal for content disclaimers
   const disclaimerModal = (
     <Modal
+      title={<Title order={1}>Code of Conduct</Title>}
       size="md"
       fullScreen={mobileView}
       trapFocus
       centered
       overlayOpacity={0.9}
       overlayBlur={5}
-      withCloseButton={false}
+      withCloseButton={mobileView}
       opened={disclaimer_modal}
-      onClose={() => dispatch(setDisclaimerModalShown(false))}
+      onClose={() => {
+        dispatch(setDisclaimerModalShown(false));
+      }}
     >
-      <Title order={1}>Code of Conduct</Title>
-      <Title order={4}>
-        Before creating a survey you must agree to the following:
-      </Title>
-
       <Stack>
-        <Alert>
-          Players are not bound to their responses. They have the right to
-          change what they consent to at any time without having to explain why.
-        </Alert>
-        <Alert>
-          If you are in any doubt about whether content is appropriate,
-          regardless of player responses to this survey, you must talk with your
-          players about it before continuing.
-        </Alert>
+        <Divider />
+        <Title order={4}>
+          Before creating a survey you must agree to the following:
+        </Title>
 
-        <Alert>If a player ignores the boundaries set by the group, you </Alert>
-        <Alert>Words</Alert>
-        <Alert>Words</Alert>
-        {/* <Title order={4}>
-          If you do not agree then continue no further and consider how your
-          style of game impacts your players.
-        </Title> */}
+        <Stack>
+          <Alert>
+            Players are not bound to their responses. They have the right to
+            change what they consent to at any time without having to explain
+            why.
+          </Alert>
+          <Alert>
+            If you are in any doubt about whether content is appropriate,
+            regardless of player responses to this survey, you must talk with
+            your players about it before continuing.
+          </Alert>
+
+          <Alert>
+            If a player ignores the boundaries set by the group, you must
+            intervene and talk with them about it. If they continue to ignore
+            the boundaries, you must remove them from the group.
+          </Alert>
+          <Alert color={"yellow"}>
+            These are still in beta, this is not representative of the final
+            code of conduct
+          </Alert>
+        </Stack>
+        <Center>
+          <Switch
+            data-autofocus
+            checked={disclaimers_accepted}
+            onChange={(e) => {
+              console.log("Disclaimer Toggle", e.target.checked);
+              dispatch(setDisclaimersAccepted(e.target.checked));
+            }}
+            value="graphic"
+            label="I agree to the Critical Consent Code of Conduct"
+          />
+        </Center>
+        <Button
+          disabled={!disclaimers_accepted}
+          onClick={() => {
+            dispatch(uploadRegistration());
+          }}
+        >
+          Create Survey
+        </Button>
       </Stack>
     </Modal>
   );
 
   return (
-    <Container>
+    <>
       {disclaimerModal}
       <Card withBorder style={{ width: "100%" }} mb={"md"}>
         <Stack>
@@ -280,12 +310,15 @@ function Register() {
             !group_name ||
             (password_protected && !password)
           }
-          onClick={() => dispatch(setDisclaimerModalShown(true))}
+          onClick={() => {
+            dispatch(setDisclaimerModalShown(true));
+            dispatch(setDisclaimersAccepted(false));
+          }}
         >
           Create Survey
         </Button>
       </Center>
-    </Container>
+    </>
   );
 }
 
