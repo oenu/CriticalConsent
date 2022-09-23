@@ -1,7 +1,7 @@
 // Types
 import { Text } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
-import { QuestionType } from "../../types";
+import { QuestionType } from "../../../types";
 
 // Import question subtypes
 import Select from "./question_types/Select";

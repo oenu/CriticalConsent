@@ -3,19 +3,19 @@ import { Alert, Button, Center, Divider, Stack, Title } from "@mantine/core";
 import Question from "./Question";
 
 // Redux
-import { useAppDispatch, useAppSelector } from "../../redux/hooks";
+import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 import {
   fetchQuestionsAsync,
   getHighlightUnanswered,
   getQuestionsStatus,
   selectAllQuestions,
   uploadResponse,
-} from "./surveySlice";
+} from "../surveySlice";
 
 // Types
 import { useEffect } from "react";
-import { QuestionType } from "../../types";
-import { getGroupCategories } from "../group/groupSlice";
+import { QuestionType } from "../../../types";
+import { getGroupCategories } from "../../group/groupSlice";
 
 function QuestionList() {
   // Redux wrapper for dispatch
