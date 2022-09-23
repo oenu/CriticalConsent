@@ -27,6 +27,9 @@ export interface RegisterState {
   // Whether the user has accepted the terms of the survey
   disclaimers_accepted: boolean;
   disclaimer_warning: boolean;
+
+  // Register Error Message
+  register_error: string | null;
 }
 
 const initialState: RegisterState = {
@@ -45,12 +48,38 @@ const initialState: RegisterState = {
 
   disclaimers_accepted: false,
   disclaimer_warning: false,
+
+  register_error: null,
 };
 
 const registerSlice = createSlice({
   name: "register",
   initialState,
   reducers: {
+    // Set the group name in the registration process
+    setGroupName: (state, action) => {
+      console.debug("setGroupName", action.payload);
+      state.group_name = action.payload;
+    },
+
+    // Enable or disable password protection in the registration process
+    setPasswordProtected: (state, action) => {
+      console.debug("setPasswordProtected", action.payload);
+      state.password_protected = action.payload;
+    },
+
+    // Set the group password in the registration process
+    setGroupPassword: (state, action) => {
+      console.debug("setGroupPassword", action.payload);
+      state.group_password = action.payload;
+    },
+
+    // Set the adult content flag in the registration process
+    setAdultContent: (state, action) => {
+      console.debug("setAdultContent", action.payload);
+      state.adult_content = action.payload;
+    },
+
     // Set the question categories in the registration process
     setCategories: (state, action) => {
       console.debug("setCategories", action.payload);
@@ -75,6 +104,7 @@ const registerSlice = createSlice({
           break;
       }
     },
+
     // Check if categories have been set and if disclaimers have been accepted
     uploadRegistration: (state, action) => {
       console.debug("uploadRegistration", action.payload);
@@ -133,11 +163,50 @@ const registerSlice = createSlice({
         ])
         .then((response) => {
           console.debug("Response:", response);
+          if (response.error) {
+            state.register_error = response.error.message;
+            console.error(response.error);
+          }
         });
     },
   },
-  extraReducers(builder) {},
+  // extraReducers(builder) {},
 });
 
 // Export reducer actions
-export const { setCategories } = registerSlice.actions;
+export const {
+  setCategories,
+  setGroupName,
+  setGroupPassword,
+  setPasswordProtected,
+  setAdultContent,
+} = registerSlice.actions;
+
+// Export Selectors
+export const selectGroupName = (state: RootState) => ({
+  group_name: state.register.group_name,
+  group_name_warning: state.register.group_name_warning,
+});
+
+export const selectGroupPassword = (state: RootState) => ({
+  password_protected: state.register.password_protected,
+  group_password: state.register.group_password,
+  group_password_warning: state.register.group_password_warning,
+});
+
+export const selectAdultContent = (state: RootState) =>
+  state.register.adult_content;
+
+export const selectContentCategories = (state: RootState) => ({
+  graphic_content: state.register.graphic_content,
+  offensive_content: state.register.offensive_content,
+  phobic_content: state.register.phobic_content,
+  sexual_content: state.register.sexual_content,
+});
+
+export const selectDisclaimers = (state: RootState) => ({
+  disclaimers_accepted: state.register.disclaimers_accepted,
+  disclaimer_warning: state.register.disclaimer_warning,
+});
+
+export default registerSlice.reducer;
