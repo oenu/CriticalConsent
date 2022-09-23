@@ -59,6 +59,12 @@ const groupSlice = createSlice({
         case "sexual":
           state.sexual_content = action.payload.value;
           break;
+        case "clear":
+          state.graphic_content = null;
+          state.offensive_content = null;
+          state.phobic_content = null;
+          state.sexual_content = null;
+          break;
       }
     },
     setGroupAdultContent: (state, action) => {
