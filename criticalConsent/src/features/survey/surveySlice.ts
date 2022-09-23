@@ -1,12 +1,12 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../../redux/store";
-import { QuestionTypes } from "./../../types.d";
+import { QuestionTypes } from "../../types.d";
 
-import { QuestionType } from "../../types";
+import { QuestionType } from "../../types.d";
 import { supabase } from "../../utils/supabaseClient";
 
-// Define a type for the slice state
-export interface QuestionState {
+// Define a type for the survey state
+export interface SurveyState {
   questions: {
     [id: number]: QuestionType | null;
   };
@@ -16,8 +16,8 @@ export interface QuestionState {
   group_id: number | null;
 }
 
-// Define the initial state using the QuestionState type
-const initialState: QuestionState = {
+// Define the initial state using the SurveyState type
+const initialState: SurveyState = {
   questions: [],
   status: "idle",
   error: null,
@@ -25,19 +25,19 @@ const initialState: QuestionState = {
   group_id: null,
 };
 
+// Useful types for Question Response types in the survey
 export interface QuestionResponse {
   id: number;
   selection: "low" | "mid" | "high";
 }
-
 export interface OptInResponse {
   id: number;
   opt_in: boolean;
 }
 
 // Import initial state and create a thunk to fetch data from the API
-const questionSlice = createSlice({
-  name: "questions",
+const surveySlice = createSlice({
+  name: "survey",
   initialState,
   reducers: {
     selectResponse: (state, action: PayloadAction<QuestionResponse>) => {
@@ -73,6 +73,7 @@ const questionSlice = createSlice({
                 select_high: question.select_high,
                 answered: question.answered,
                 group_id: state.group_id,
+                opt_in: question.opt_in,
               };
             }
           }
@@ -153,16 +154,15 @@ export const fetchQuestionsAsync = createAsyncThunk(
 );
 
 // Export constants for selectors
-export const selectAllQuestions = (state: RootState) =>
-  state.questions.questions;
-export const getQuestionsStatus = (state: RootState) => state.questions.status;
-export const getQuestionsError = (state: RootState) => state.questions.error;
+export const selectAllQuestions = (state: RootState) => state.survey.questions;
+export const getQuestionsStatus = (state: RootState) => state.survey.status;
+export const getQuestionsError = (state: RootState) => state.survey.error;
 export const getHighlightUnanswered = (state: RootState) =>
-  state.questions.highlightUnanswered;
+  state.survey.highlightUnanswered;
 
 // Export reducer actions
 export const { selectResponse, uploadResponse, setOptIn, setQuestionGroupId } =
-  questionSlice.actions;
+  surveySlice.actions;
 
 // Export reducer
-export default questionSlice.reducer;
+export default surveySlice.reducer;

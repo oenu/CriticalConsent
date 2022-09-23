@@ -3,19 +3,19 @@ import { Alert, Button, Center, Divider, Stack, Title } from "@mantine/core";
 import Question from "./Question";
 
 // Redux
-import { useAppDispatch, useAppSelector } from "../../redux/hooks";
+import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 import {
   fetchQuestionsAsync,
   getHighlightUnanswered,
   getQuestionsStatus,
   selectAllQuestions,
   uploadResponse,
-} from "./questionSlice";
+} from "../surveySlice";
 
 // Types
-import { QuestionType } from "../../types";
 import { useEffect } from "react";
-import { getGroupCategories, getGroupId } from "../group/groupSlice";
+import { QuestionType } from "../../../types";
+import { getGroupCategories } from "../../group/groupSlice";
 
 function QuestionList() {
   // Redux wrapper for dispatch
@@ -96,7 +96,7 @@ function QuestionList() {
               // Ignore the general category from the list of sub categories
               if (category !== "general") {
                 if (categorizedQuestions[category].length > 0) {
-                  if (Object.values(groupCategories).includes(category)) {
+                  if (Object.keys(groupCategories).includes(category)) {
                     return (
                       <div key={category}>
                         <Divider mt={"xs"} mb={"md"} />

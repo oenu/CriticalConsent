@@ -14,12 +14,17 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 // Pages
 import Landing from "./pages/landing/Landing";
-import Register from "./pages/register/Register";
-import Survey from "./pages/survey/Survey";
+import Register from "./features/register/Register";
+import Survey from "./features/survey/Survey";
 import NotFound from "./pages/404/NotFound";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
+    {/* Prevent auto zooming  on ios */}
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1"
+    />
     <Provider store={store}>
       <MantineProvider
         theme={{

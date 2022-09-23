@@ -1,5 +1,5 @@
 import React from "react";
-import { QuestionType } from "../../../types";
+import { QuestionType } from "../../../../types";
 
 function CustomResponse({
   question,

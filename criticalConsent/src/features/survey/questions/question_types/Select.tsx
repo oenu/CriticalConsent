@@ -1,7 +1,7 @@
 import { Button, Card, Divider, Grid, Paper, Text } from "@mantine/core";
-import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
-import { QuestionType } from "../../../types";
-import { getHighlightUnanswered, selectResponse } from "../questionSlice";
+import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
+import { QuestionType } from "../../../../types";
+import { getHighlightUnanswered, selectResponse } from "../../surveySlice";
 
 function Select({
   question,

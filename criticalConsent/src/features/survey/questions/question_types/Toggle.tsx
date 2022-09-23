@@ -7,9 +7,9 @@ import {
   useMantineTheme,
 } from "@mantine/core";
 import { IconCheck, IconX } from "@tabler/icons";
-import { useAppDispatch } from "../../../redux/hooks";
-import { QuestionType } from "../../../types";
-import { setOptIn } from "../questionSlice";
+import { useAppDispatch } from "../../../../redux/hooks";
+import { QuestionType } from "../../../../types";
+import { setOptIn } from "../../surveySlice";
 
 function Toggle({
   question,
