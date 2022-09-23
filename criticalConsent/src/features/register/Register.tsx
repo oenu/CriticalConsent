@@ -14,7 +14,7 @@ import {
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 
 import {
-  selectAdultContent,
+  selectMatureContent,
   selectContentCategories,
   selectGroupName,
   selectGroupPassword,
@@ -37,8 +37,8 @@ function Register() {
   const { graphic_content, sexual_content, phobic_content, offensive_content } =
     useAppSelector(selectContentCategories);
 
-  // Status of whether to show adult content
-  const showAdultContent = useAppSelector(selectAdultContent);
+  // Status of whether to show mature content
+  const showMatureContent = useAppSelector(selectMatureContent);
 
   // Status of the group password
   const { password_protected, password, password_warning } =
@@ -104,9 +104,9 @@ function Register() {
               <Divider />
               <Title order={2}>Mature Content</Title>
               <Switch
-                checked={showAdultContent || false}
+                checked={showMatureContent || false}
                 onChange={(e) => {
-                  console.log("Adult Content", e.target.checked);
+                  console.log("Mature Content", e.target.checked);
                   dispatch(
                     setCategories({
                       category: "graphic",
@@ -114,8 +114,8 @@ function Register() {
                     })
                   );
                 }}
-                value="adult"
-                label="Enable Adult Content Questions"
+                value="mature"
+                label="Enable Mature Content Questions"
               />
               {/* <Text>Select topics to include in your survey</Text> */}
               <Title order={3}>Graphic Content</Title>

@@ -21,8 +21,8 @@ export interface RegisterState {
   phobic_content: boolean;
   sexual_content: boolean;
 
-  // Whether the survey should include any adult content at all, overrides content categories
-  adult_content: boolean;
+  // Whether the survey should include any mature content at all, overrides content categories
+  mature_content: boolean;
 
   // Whether the user has accepted the terms of the survey
   disclaimers_accepted: boolean;
@@ -40,7 +40,7 @@ const initialState: RegisterState = {
   password: null,
   password_warning: false,
 
-  adult_content: false,
+  mature_content: false,
   graphic_content: false,
   offensive_content: false,
   phobic_content: false,
@@ -86,12 +86,12 @@ const registerSlice = createSlice({
       state.password = action.payload;
     },
 
-    // Set the adult content flag in the registration process
-    setAdultContent: (state, action) => {
-      console.debug("setAdultContent", action.payload);
-      state.adult_content = action.payload;
+    // Set the mature content flag in the registration process
+    setMatureContent: (state, action) => {
+      console.debug("setMatureContent", action.payload);
+      state.mature_content = action.payload;
 
-      // If the adult content flag is disabled, then all other content flags should be set to false
+      // If the mature content flag is disabled, then all other content flags should be set to false
       if (!action.payload) {
         state.graphic_content = false;
         state.offensive_content = false;
@@ -147,8 +147,8 @@ const registerSlice = createSlice({
         return;
       }
 
-      // Check if the user has enabled adult content, if not disable all content categories
-      if (!state.adult_content) {
+      // Check if the user has enabled mature content, if not disable all content categories
+      if (!state.mature_content) {
         state.graphic_content = false;
         state.offensive_content = false;
         state.phobic_content = false;
@@ -201,7 +201,7 @@ export const {
   setPasswordProtected,
   setPasswordWarning,
   setCategories,
-  setAdultContent,
+  setMatureContent,
 } = registerSlice.actions;
 
 // Export Selectors
@@ -216,8 +216,8 @@ export const selectGroupPassword = (state: RootState) => ({
   password_warning: state.register.password_warning,
 });
 
-export const selectAdultContent = (state: RootState) =>
-  state.register.adult_content;
+export const selectMatureContent = (state: RootState) =>
+  state.register.mature_content;
 
 export const selectContentCategories = (state: RootState) => ({
   graphic_content: state.register.graphic_content,

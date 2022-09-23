@@ -6,7 +6,7 @@ export interface GroupState {
   // Group Information
   id: number | null;
   name: string | null;
-  adult_content: boolean | null;
+  mature_content: boolean | null;
 
   // Question Categories Accepted by the Group
   graphic_content: boolean | null;
@@ -22,7 +22,7 @@ export interface GroupState {
 const initialState: GroupState = {
   id: null,
   name: null,
-  adult_content: null,
+  mature_content: null,
 
   graphic_content: null,
   offensive_content: null,
@@ -51,7 +51,7 @@ const groupSlice = createSlice({
       // Group Information
       state.id = action.payload.id;
       state.name = action.payload.name;
-      state.adult_content = action.payload.adult_content;
+      state.mature_content = action.payload.mature_content;
 
       // Question Categories Accepted by the Group
       state.graphic_content = action.payload.graphic_content;
@@ -96,9 +96,9 @@ export const fetchGroupByIdAsync = createAsyncThunk(
 // Export const equal to the group_id
 export const getGroupId = (state: RootState) => state.group.id;
 
-// Export whether the group accepts adult content at all
-export const getShowAdultContent = (state: RootState) =>
-  state.group.adult_content;
+// Export whether the group accepts mature content at all
+export const getShowMatureContent = (state: RootState) =>
+  state.group.mature_content;
 
 // Export array of question categories accepted by the group
 export const getGroupCategories = (

@@ -28,7 +28,7 @@ export interface QuestionType {
   example_high: string;
   select_high: boolean;
   answered: boolean;
-  adult_content: boolean;
+  mature_content: boolean;
   category: QuestionCategories;
   custom_response: string;
   opt_in: boolean;
@@ -39,7 +39,7 @@ export interface GroupType {
   id: number;
   name: string;
   shortid: string;
-  adult_content: boolean;
+  mature_content: boolean;
   graphic_content: boolean;
   offensive_content: boolean;
   phobic_content: boolean;
