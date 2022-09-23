@@ -11,9 +11,9 @@ export interface RegisterState {
 
   // Group password
   password_protected: boolean;
-  group_password: string | null;
+  password: string | null;
   // Whether to show a warning that the group password has not been set
-  group_password_warning: boolean;
+  password_warning: boolean;
 
   // Whether the user has selected categories to be included in the survey
   graphic_content: boolean;
@@ -37,8 +37,8 @@ const initialState: RegisterState = {
   group_name_warning: false,
 
   password_protected: false,
-  group_password: null,
-  group_password_warning: false,
+  password: null,
+  password_warning: false,
 
   adult_content: false,
   graphic_content: false,
@@ -60,6 +60,12 @@ const registerSlice = createSlice({
     setGroupName: (state, action) => {
       console.debug("setGroupName", action.payload);
       state.group_name = action.payload;
+      console.log("state.group_name", state.group_name);
+    },
+    // Set Group name warning
+    setGroupNameWarning: (state, action) => {
+      console.debug("setGroupNameWarning", action.payload);
+      state.group_name_warning = action.payload;
     },
 
     // Enable or disable password protection in the registration process
@@ -68,16 +74,30 @@ const registerSlice = createSlice({
       state.password_protected = action.payload;
     },
 
+    // Set whether the password warning should be shown
+    setPasswordWarning: (state, action) => {
+      console.debug("setPasswordWarning", action.payload);
+      state.password_warning = action.payload;
+    },
+
     // Set the group password in the registration process
     setGroupPassword: (state, action) => {
       console.debug("setGroupPassword", action.payload);
-      state.group_password = action.payload;
+      state.password = action.payload;
     },
 
     // Set the adult content flag in the registration process
     setAdultContent: (state, action) => {
       console.debug("setAdultContent", action.payload);
       state.adult_content = action.payload;
+
+      // If the adult content flag is disabled, then all other content flags should be set to false
+      if (!action.payload) {
+        state.graphic_content = false;
+        state.offensive_content = false;
+        state.phobic_content = false;
+        state.sexual_content = false;
+      }
     },
 
     // Set the question categories in the registration process
@@ -118,12 +138,12 @@ const registerSlice = createSlice({
 
       // If the user has not enabled a password, set the password field to null
       if (!state.password_protected) {
-        state.group_password = null;
+        state.password = null;
       }
       // Check if the user has enabled a password but not set one
-      if (state.password_protected && state.group_password === null) {
+      if (state.password_protected && state.password === null) {
         console.error("No group password set");
-        state.group_password_warning = true;
+        state.password_warning = true;
         return;
       }
 
@@ -153,7 +173,7 @@ const registerSlice = createSlice({
           {
             name: state.group_name,
             password_protected: state.password_protected,
-            password: state.group_password,
+            password: state.password,
             graphic_content: state.graphic_content,
             offensive_content: state.offensive_content,
             phobic_content: state.phobic_content,
@@ -175,10 +195,12 @@ const registerSlice = createSlice({
 
 // Export reducer actions
 export const {
-  setCategories,
   setGroupName,
+  setGroupNameWarning,
   setGroupPassword,
   setPasswordProtected,
+  setPasswordWarning,
+  setCategories,
   setAdultContent,
 } = registerSlice.actions;
 
@@ -190,8 +212,8 @@ export const selectGroupName = (state: RootState) => ({
 
 export const selectGroupPassword = (state: RootState) => ({
   password_protected: state.register.password_protected,
-  group_password: state.register.group_password,
-  group_password_warning: state.register.group_password_warning,
+  password: state.register.password,
+  password_warning: state.register.password_warning,
 });
 
 export const selectAdultContent = (state: RootState) =>

@@ -12,26 +12,88 @@ import {
 } from "@mantine/core";
 
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
-import { getGroupCategories, getShowAdultContent } from "../group/groupSlice";
-import { setCategories } from "./registerSlice";
+
+import {
+  selectAdultContent,
+  selectContentCategories,
+  selectGroupName,
+  selectGroupPassword,
+  setCategories,
+  setGroupName,
+  setGroupNameWarning,
+  setGroupPassword,
+  setPasswordProtected,
+  setPasswordWarning,
+} from "./registerSlice";
 
 function Register() {
   // Redux wrapper for dispatch
   const dispatch = useAppDispatch();
 
+  // Status of group name
+  const { group_name, group_name_warning } = useAppSelector(selectGroupName);
+
   // Status of which content categories are selected
-  const selectedAdultContent = useAppSelector(getGroupCategories);
+  const { graphic_content, sexual_content, phobic_content, offensive_content } =
+    useAppSelector(selectContentCategories);
 
   // Status of whether to show adult content
-  const showAdultContent = useAppSelector(getShowAdultContent);
+  const showAdultContent = useAppSelector(selectAdultContent);
+
+  // Status of the group password
+  const { password_protected, password, password_warning } =
+    useAppSelector(selectGroupPassword);
 
   return (
     <Container>
       <Center style={{ width: "100%" }}>
         <Card mx={"xl"} withBorder>
-          <Stack align={"center"}>
-            <Title order={3}>New Survey</Title>
-            <TextInput label="Group Name" placeholder="Enter your group name" />
+          <Title order={2}>New Survey</Title>
+          <Divider mt={"xs"} mb={"md"} />
+          <Stack>
+            <TextInput
+              label="Group Name"
+              placeholder="Consent Champions"
+              withAsterisk
+              required
+              onBlur={(e) => {
+                dispatch(setGroupName(e.currentTarget.value));
+                if (e.currentTarget.value === "") {
+                  dispatch(setGroupNameWarning(true));
+                } else {
+                  dispatch(setGroupNameWarning(false));
+                }
+              }}
+              error={group_name_warning ? "Please enter a name" : ""}
+            />
+            <>
+              <Switch
+                label="Require Passcode"
+                checked={password_protected}
+                onChange={(e) => {
+                  dispatch(setPasswordProtected(e.currentTarget.checked));
+                  if (!e.currentTarget.checked) {
+                    dispatch(setPasswordWarning(false));
+                  }
+                }}
+              />
+              <TextInput
+                label="Group Passcode"
+                placeholder="password123"
+                disabled={!password_protected}
+                withAsterisk={password_protected}
+                required={password_protected}
+                onBlur={(e) => {
+                  dispatch(setGroupPassword(e.currentTarget.value));
+                  if (password_protected && e.currentTarget.value === "") {
+                    dispatch(setPasswordWarning(true));
+                  } else {
+                    dispatch(setPasswordWarning(false));
+                  }
+                }}
+                error={password_warning ? "Please enter a passcode" : ""}
+              />
+            </>
 
             {/* Content toggles */}
             <Stack>
@@ -50,8 +112,8 @@ function Register() {
                     })
                   );
                 }}
-                value="graphic"
-                label="Include Graphic Content Questions"
+                value="adult"
+                label="Enable Adult Content Questions"
               />
               <Text>Select topics to include in your survey</Text>
               <Divider />
@@ -63,7 +125,7 @@ function Register() {
                 exploitation, cannibalism, and virulent diseases.
               </Text>
               <Switch
-                checked={selectedAdultContent.graphic_content}
+                checked={graphic_content}
                 onChange={(checked) => {
                   console.log("Graphic Content", checked.target.checked);
                   dispatch(
@@ -85,7 +147,7 @@ function Register() {
               </Text>
 
               <Switch
-                checked={selectedAdultContent.sexual_content}
+                checked={sexual_content}
                 onChange={(checked) => {
                   console.log("Sexual Content", checked.target.checked);
                   dispatch(
@@ -107,7 +169,7 @@ function Register() {
                 in a fantasy world and content directed at/from players.
               </Text>
               <Switch
-                checked={selectedAdultContent.offensive_content}
+                checked={offensive_content}
                 onChange={(checked) => {
                   console.log("Offensive Content", checked.target.checked);
                   dispatch(
@@ -129,7 +191,7 @@ function Register() {
               </Text>
 
               <Switch
-                checked={selectedAdultContent.phobic_content}
+                checked={phobic_content}
                 onChange={(checked) => {
                   console.log("Phobic Content", checked.target.checked);
                   dispatch(
