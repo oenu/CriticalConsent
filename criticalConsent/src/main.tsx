@@ -20,6 +20,11 @@ import NotFound from "./pages/404/NotFound";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
+    {/* Prevent auto zooming  on ios */}
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1"
+    />
     <Provider store={store}>
       <MantineProvider
         theme={{
