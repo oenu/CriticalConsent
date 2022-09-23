@@ -47,15 +47,15 @@ function Register() {
   return (
     <Container>
       <Center style={{ width: "100%" }}>
-        <Card mx={"xl"} withBorder>
-          <Title order={2}>New Survey</Title>
-          <Divider mt={"xs"} mb={"md"} />
+        <Card withBorder>
           <Stack>
+            <Title order={2}>Group Information</Title>
             <TextInput
               label="Group Name"
               placeholder="Consent Champions"
               withAsterisk
               required
+              defaultValue={group_name || ""}
               onBlur={(e) => {
                 dispatch(setGroupName(e.currentTarget.value));
                 if (e.currentTarget.value === "") {
@@ -72,7 +72,7 @@ function Register() {
                 checked={password_protected}
                 onChange={(e) => {
                   dispatch(setPasswordProtected(e.currentTarget.checked));
-                  if (!e.currentTarget.checked) {
+                  if (!e.currentTarget.checked && password_warning) {
                     dispatch(setPasswordWarning(false));
                   }
                 }}
@@ -97,26 +97,27 @@ function Register() {
 
             {/* Content toggles */}
             <Stack>
-              <Text>
+              {/* <Text>
                 If a player indicates that they uncomfortable with included
                 content it should not be used in games
-              </Text>
+              </Text> */}
+              <Divider />
+              <Title order={2}>Mature Content</Title>
               <Switch
                 checked={showAdultContent || false}
-                onChange={(checked) => {
-                  console.log("Adult Content", checked.target.checked);
+                onChange={(e) => {
+                  console.log("Adult Content", e.target.checked);
                   dispatch(
                     setCategories({
                       category: "graphic",
-                      value: checked.target.checked,
+                      value: e.target.checked,
                     })
                   );
                 }}
                 value="adult"
                 label="Enable Adult Content Questions"
               />
-              <Text>Select topics to include in your survey</Text>
-              <Divider />
+              {/* <Text>Select topics to include in your survey</Text> */}
               <Title order={3}>Graphic Content</Title>
               <Text size={"xs"} italic>
                 Graphic content questions address depictions of extreme
@@ -126,12 +127,12 @@ function Register() {
               </Text>
               <Switch
                 checked={graphic_content}
-                onChange={(checked) => {
-                  console.log("Graphic Content", checked.target.checked);
+                onChange={(e) => {
+                  console.log("Graphic Content", e.target.checked);
                   dispatch(
                     setCategories({
                       category: "graphic",
-                      value: checked.target.checked,
+                      value: e.target.checked,
                     })
                   );
                 }}
@@ -148,12 +149,12 @@ function Register() {
 
               <Switch
                 checked={sexual_content}
-                onChange={(checked) => {
-                  console.log("Sexual Content", checked.target.checked);
+                onChange={(e) => {
+                  console.log("Sexual Content", e.target.checked);
                   dispatch(
                     setCategories({
                       category: "sexual",
-                      value: checked.target.checked,
+                      value: e.target.checked,
                     })
                   );
                 }}
@@ -170,12 +171,12 @@ function Register() {
               </Text>
               <Switch
                 checked={offensive_content}
-                onChange={(checked) => {
-                  console.log("Offensive Content", checked.target.checked);
+                onChange={(e) => {
+                  console.log("Offensive Content", e.target.checked);
                   dispatch(
                     setCategories({
                       category: "offensive",
-                      value: checked.target.checked,
+                      value: e.target.checked,
                     })
                   );
                 }}
@@ -192,12 +193,12 @@ function Register() {
 
               <Switch
                 checked={phobic_content}
-                onChange={(checked) => {
-                  console.log("Phobic Content", checked.target.checked);
+                onChange={(e) => {
+                  console.log("Phobic Content", e.target.checked);
                   dispatch(
                     setCategories({
                       category: "phobic",
-                      value: checked.target.checked,
+                      value: e.target.checked,
                     })
                   );
                 }}
