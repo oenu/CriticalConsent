@@ -25,7 +25,7 @@ import {
 import {
   fetchQuestionsAsync,
   getQuestionsStatus,
-} from "./features/question/questionSlice";
+} from "./features/survey/questionSlice";
 import { useAppDispatch, useAppSelector } from "./redux/hooks";
 
 export default function App() {

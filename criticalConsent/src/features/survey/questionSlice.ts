@@ -1,8 +1,8 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../../redux/store";
-import { QuestionTypes } from "./../../types.d";
+import { QuestionTypes } from "../../types.d";
 
-import { QuestionType } from "../../types";
+import { QuestionType } from "../../types.d";
 import { supabase } from "../../utils/supabaseClient";
 
 // Define a type for the slice state

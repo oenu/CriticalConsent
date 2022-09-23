@@ -5,7 +5,7 @@ import {
 } from "@reduxjs/toolkit";
 
 // Redux reducers
-import questionReducer from "../features/question/questionSlice";
+import questionReducer from "../features/survey/questionSlice";
 import groupReducer from "../features/group/groupSlice";
 import appReducer from "../features/app/appSlice";
 

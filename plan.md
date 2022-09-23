@@ -6,10 +6,6 @@ Move functions into their own smaller slicers and rework the names of the slicer
 
 Handles app state such as dark mode, and whether app burger menu is open.
 
-## QuestionSlice
-
-Handles questions received from the supabase database.
-
 ## RegistrationSlice
 
 Handles registration of new surveys.

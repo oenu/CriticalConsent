@@ -16,11 +16,11 @@ import { Link, useParams } from "react-router-dom";
 
 // Redux
 import { fetchGroupByIdAsync } from "../../features/group/groupSlice";
-import { setQuestionGroupId } from "../../features/question/questionSlice";
+import { setQuestionGroupId } from "../../features/survey/questionSlice";
 import { useAppDispatch } from "../../redux/hooks";
 
 // Features
-import QuestionList from "../../features/question/QuestionList";
+import QuestionList from "../../features/survey/QuestionList";
 
 export default function Survey() {
   // Redux wrapper for dispatch
