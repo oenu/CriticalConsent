@@ -3,47 +3,41 @@ import { RootState } from "../../redux/store";
 import { GroupType, QuestionCategories } from "./../../types.d";
 import { supabase } from "./../../utils/supabaseClient";
 export interface GroupState {
+  // Group Information
   id: number | null;
   name: string | null;
   nsfw: boolean | null;
-  status: "idle" | "loading" | "succeeded" | "failed";
-  error: string | null;
+
+  // Question Categories Accepted by the Group
   graphic_content: boolean | null;
   offensive_content: boolean | null;
   phobic_content: boolean | null;
   sexual_content: boolean | null;
+
+  // Group Thunk State
+  status: "idle" | "loading" | "succeeded" | "failed";
+  error: string | null;
 }
 
 const initialState: GroupState = {
   id: null,
   name: null,
   nsfw: null,
-  status: "idle",
-  error: null,
+
   graphic_content: null,
   offensive_content: null,
   phobic_content: null,
   sexual_content: null,
+
+  status: "idle",
+  error: null,
 };
 
 const groupSlice = createSlice({
   name: "group",
   initialState,
   reducers: {
-    // Set the redux store with the group data
-    setGroup: (state, action) => {
-      console.debug("setGroup", action.payload);
-      state.id = action.payload.id;
-      state.name = action.payload.name;
-      state.nsfw = action.payload.nsfw;
-    },
-
-    // Register a new group in the database
-    registerGroup: (state, action) => {
-      console.debug("registerGroup", action.payload);
-    },
-
-    // Set Group Question Categories
+    // Set the question categories accepted by the group
     setGroupQuestionCategories: (state, action) => {
       console.debug("setGroupQuestionCategories", action.payload);
       switch (action.payload.category) {
@@ -67,26 +61,29 @@ const groupSlice = createSlice({
           break;
       }
     },
-    setGroupAdultContent: (state, action) => {
-      console.debug("setGroupAdultContent", action.payload);
-      state.nsfw = action.payload;
-    },
   },
   extraReducers(builder) {
+    // Update the group status to Loading, meaning the group is being fetched and a loading element should be displayed
     builder.addCase(fetchGroupByIdAsync.pending, (state, action) => {
       state.status = "loading";
     });
+
+    // Update the group status to Succeeded, meaning the group has been fetched and the group information should be set
     builder.addCase(fetchGroupByIdAsync.fulfilled, (state, action) => {
       state.status = "succeeded";
-      // Add fetched group to the state
+      // Group Information
       state.id = action.payload.id;
       state.name = action.payload.name;
       state.nsfw = action.payload.nsfw;
+
+      // Question Categories Accepted by the Group
       state.graphic_content = action.payload.graphic_content;
       state.offensive_content = action.payload.offensive_content;
       state.phobic_content = action.payload.phobic_content;
       state.sexual_content = action.payload.sexual_content;
     });
+
+    // Update the group status to Failed, meaning the group has failed to be fetched and an error message should be displayed
     builder.addCase(fetchGroupByIdAsync.rejected, (state, action) => {
       state.status = "failed";
       console.debug("fetchGroupByIdAsync.rejected", action.error);
@@ -95,18 +92,18 @@ const groupSlice = createSlice({
   },
 });
 
-// Fetch group
+// Fetch group async thunk
 export const fetchGroupByIdAsync = createAsyncThunk(
   "group/fetchGroupByIdAsync",
   async (group_id: number): Promise<GroupType> => {
     try {
-      console.debug("fetching group");
+      console.debug("Fetching group...");
       const { data, error } = await supabase
         .from("groups")
         .select("*")
         .eq("id", group_id);
       if (error) {
-        console.warn("error fetching group", error);
+        console.warn("error fetching group!", error);
         throw error;
       } else {
         console.debug("fetched group", data);
@@ -120,38 +117,35 @@ export const fetchGroupByIdAsync = createAsyncThunk(
 );
 
 // Export reducer actions
-export const { registerGroup, setGroup, setGroupQuestionCategories } =
-  groupSlice.actions;
+export const { setGroupQuestionCategories } = groupSlice.actions;
 
-// Export constants for selectors
+// Export const equal to the group_id
 export const getGroupId = (state: RootState) => state.group.id;
-export const getSelectedAdultCategories = (state: RootState) => {
+
+// Export whether the group accepts adult content at all
+export const getShowAdultContent = (state: RootState) => state.group.nsfw;
+
+// Export array of question categories accepted by the group
+export const getGroupCategories = (
+  state: RootState
+): {
+  general_content: boolean;
+  graphic_content: boolean;
+  offensive_content: boolean;
+  phobic_content: boolean;
+  sexual_content: boolean;
+} => {
   return {
+    general_content: true,
     graphic_content: state.group.graphic_content || false,
     offensive_content: state.group.offensive_content || false,
     phobic_content: state.group.phobic_content || false,
     sexual_content: state.group.sexual_content || false,
   };
 };
-export const getShowAdultContent = (state: RootState) => state.group.nsfw;
 
+// Thunk status selector
 export const getGroupStatus = (state: RootState) => state.group.status;
-export const getGroupCategories = (state: RootState) => {
-  let categories = [String(QuestionCategories.general)];
-  if (state.group.graphic_content) {
-    categories.push(String(QuestionCategories.graphic));
-  }
-  if (state.group.offensive_content) {
-    categories.push(String(QuestionCategories.offensive));
-  }
-  if (state.group.phobic_content) {
-    categories.push(String(QuestionCategories.phobic));
-  }
-  if (state.group.sexual_content) {
-    categories.push(String(QuestionCategories.sexual));
-  }
-  return categories;
-};
 
 // Export the reducer
 export default groupSlice.reducer;

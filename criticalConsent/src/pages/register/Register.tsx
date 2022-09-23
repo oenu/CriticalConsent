@@ -12,7 +12,7 @@ import {
 } from "@mantine/core";
 
 import {
-  getSelectedAdultCategories,
+  getGroupCategories,
   getShowAdultContent,
   setGroupQuestionCategories,
 } from "../../features/group/groupSlice";
@@ -23,7 +23,7 @@ function Register() {
   const dispatch = useAppDispatch();
 
   // Status of which content categories are selected
-  const selectedAdultContent = useAppSelector(getSelectedAdultCategories);
+  const selectedAdultContent = useAppSelector(getGroupCategories);
 
   // Status of whether to show adult content
   const showAdultContent = useAppSelector(getShowAdultContent);
