@@ -4,9 +4,9 @@ import { useMediaQuery } from "@mantine/hooks";
 import { QuestionType } from "../../types";
 
 // Import question subtypes
-import Select from "./subtypes/Select";
-import Toggle from "./subtypes/Toggle";
-import CustomResponse from "./subtypes/CustomResponse";
+import Select from "./question_types/Select";
+import Toggle from "./question_types/Toggle";
+import CustomResponse from "./question_types/CustomResponse";
 
 function Question({ question }: { question: QuestionType }) {
   // Detect if the screen is small
