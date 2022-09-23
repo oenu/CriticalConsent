@@ -50,13 +50,8 @@ export const selectAcceptAdultDisclaimer = (state: RootState) =>
   state.app.acceptAdultDisclaimer;
 
 // Export reducer actions
-export const {
-  toggleDarkMode,
-  toggleBurgerMenu,
-  closeBurgerMenu,
-  setAcceptAdultContent,
-  setShowAdultContent,
-} = appSlice.actions;
+export const { toggleDarkMode, toggleBurgerMenu, closeBurgerMenu } =
+  appSlice.actions;
 
 // Export the reducer
 export default appSlice.reducer;
