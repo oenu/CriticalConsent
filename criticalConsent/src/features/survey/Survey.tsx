@@ -1,23 +1,15 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 // Mantine Components
-import {
-  Button,
-  Card,
-  Center,
-  Container,
-  Space,
-  Stack,
-  Text,
-} from "@mantine/core";
+import { Button, Card, Center, Container, Stack, Text } from "@mantine/core";
 
 // React Router
 import { Link, useParams } from "react-router-dom";
 
 // Redux
+import { useAppDispatch } from "../../redux/hooks";
 import { fetchGroupByIdAsync } from "../group/groupSlice";
 import { setQuestionGroupId } from "./surveySlice";
-import { useAppDispatch } from "../../redux/hooks";
 
 // Features
 import QuestionList from "./questions/QuestionList";
