@@ -117,9 +117,7 @@ export default function App() {
         </Header>
       }
     >
-      <Container>
-        <Outlet />
-      </Container>
+      <Outlet />
     </AppShell>
   );
 }
