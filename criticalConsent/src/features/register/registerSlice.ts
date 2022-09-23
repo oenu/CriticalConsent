@@ -146,9 +146,7 @@ const registerSlice = createSlice({
     },
 
     // Check if categories have been set and if disclaimers have been accepted
-    uploadRegistration: (state, action) => {
-      console.debug("uploadRegistration", action.payload);
-
+    uploadRegistration: (state) => {
       // Check if the user has set a group name
       if (state.group_name === null) {
         console.error("No group name set");
@@ -210,7 +208,6 @@ const registerSlice = createSlice({
         });
     },
   },
-  // extraReducers(builder) {},
 });
 
 // Export reducer actions
@@ -225,6 +222,7 @@ export const {
   setDisclaimersAccepted,
   setDisclaimerWarning,
   setDisclaimerModalShown,
+  uploadRegistration,
 } = registerSlice.actions;
 
 // Export Selectors
