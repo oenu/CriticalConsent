@@ -27,6 +27,7 @@ export interface RegisterState {
   // Whether the user has accepted the terms of the survey
   disclaimers_accepted: boolean;
   disclaimer_warning: boolean;
+  disclaimer_modal: boolean;
 
   // Register Error Message
   register_error: string | null;
@@ -48,6 +49,7 @@ const initialState: RegisterState = {
 
   disclaimers_accepted: false,
   disclaimer_warning: false,
+  disclaimer_modal: false,
 
   register_error: null,
 };
@@ -123,6 +125,24 @@ const registerSlice = createSlice({
           state.sexual_content = false;
           break;
       }
+    },
+
+    // Set the disclaimer accepted flag in the registration process
+    setDisclaimersAccepted: (state, action) => {
+      console.debug("setDisclaimersAccepted", action.payload);
+      state.disclaimers_accepted = action.payload;
+    },
+
+    // Set the disclaimer warning flag in the registration process
+    setDisclaimerWarning: (state, action) => {
+      console.debug("setDisclaimerWarning", action.payload);
+      state.disclaimer_warning = action.payload;
+    },
+
+    // Set the disclaimer modal flag in the registration process
+    setDisclaimerModalShown: (state, action) => {
+      console.debug("setDisclaimerModal", action.payload);
+      state.disclaimer_modal = action.payload;
     },
 
     // Check if categories have been set and if disclaimers have been accepted
@@ -202,6 +222,9 @@ export const {
   setPasswordWarning,
   setCategories,
   setMatureContent,
+  setDisclaimersAccepted,
+  setDisclaimerWarning,
+  setDisclaimerModalShown,
 } = registerSlice.actions;
 
 // Export Selectors
@@ -229,6 +252,7 @@ export const selectContentCategories = (state: RootState) => ({
 export const selectDisclaimers = (state: RootState) => ({
   disclaimers_accepted: state.register.disclaimers_accepted,
   disclaimer_warning: state.register.disclaimer_warning,
+  disclaimer_modal: state.register.disclaimer_modal,
 });
 
 export default registerSlice.reducer;
