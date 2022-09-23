@@ -13,9 +13,9 @@ import {
 } from "./questionSlice";
 
 // Types
-import { QuestionType } from "../../types";
 import { useEffect } from "react";
-import { getGroupCategories, getGroupId } from "../group/groupSlice";
+import { QuestionType } from "../../types";
+import { getGroupCategories } from "../group/groupSlice";
 
 function QuestionList() {
   // Redux wrapper for dispatch
