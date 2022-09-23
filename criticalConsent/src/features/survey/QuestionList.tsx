@@ -10,7 +10,7 @@ import {
   getQuestionsStatus,
   selectAllQuestions,
   uploadResponse,
-} from "./questionSlice";
+} from "./surveySlice";
 
 // Types
 import { useEffect } from "react";
@@ -96,7 +96,7 @@ function QuestionList() {
               // Ignore the general category from the list of sub categories
               if (category !== "general") {
                 if (categorizedQuestions[category].length > 0) {
-                  if (Object.values(groupCategories).includes(category)) {
+                  if (Object.keys(groupCategories).includes(category)) {
                     return (
                       <div key={category}>
                         <Divider mt={"xs"} mb={"md"} />

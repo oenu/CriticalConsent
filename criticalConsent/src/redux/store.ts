@@ -5,13 +5,13 @@ import {
 } from "@reduxjs/toolkit";
 
 // Redux reducers
-import questionReducer from "../features/survey/questionSlice";
+import surveyReducer from "../features/survey/surveySlice";
 import groupReducer from "../features/group/groupSlice";
 import appReducer from "../features/app/appSlice";
 
 // Combine reducers to create a root reducer
 const rootReducer = combineReducers({
-  questions: questionReducer,
+  survey: surveyReducer,
   group: groupReducer,
   app: appReducer,
 });

@@ -16,7 +16,7 @@ import { Link, useParams } from "react-router-dom";
 
 // Redux
 import { fetchGroupByIdAsync } from "../../features/group/groupSlice";
-import { setQuestionGroupId } from "../../features/survey/questionSlice";
+import { setQuestionGroupId } from "../../features/survey/surveySlice";
 import { useAppDispatch } from "../../redux/hooks";
 
 // Features

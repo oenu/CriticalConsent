@@ -9,7 +9,7 @@ import {
 import { IconCheck, IconX } from "@tabler/icons";
 import { useAppDispatch } from "../../../redux/hooks";
 import { QuestionType } from "../../../types";
-import { setOptIn } from "../questionSlice";
+import { setOptIn } from "../surveySlice";
 
 function Toggle({
   question,
