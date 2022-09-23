@@ -11,12 +11,9 @@ import {
   Title,
 } from "@mantine/core";
 
-import {
-  getGroupCategories,
-  getShowAdultContent,
-  setGroupQuestionCategories,
-} from "../group/groupSlice";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
+import { getGroupCategories, getShowAdultContent } from "../group/groupSlice";
+import { setCategories } from "./registerSlice";
 
 function Register() {
   // Redux wrapper for dispatch
@@ -47,7 +44,7 @@ function Register() {
                 onChange={(checked) => {
                   console.log("Adult Content", checked.target.checked);
                   dispatch(
-                    setGroupQuestionCategories({
+                    setCategories({
                       category: "graphic",
                       value: checked.target.checked,
                     })
@@ -70,7 +67,7 @@ function Register() {
                 onChange={(checked) => {
                   console.log("Graphic Content", checked.target.checked);
                   dispatch(
-                    setGroupQuestionCategories({
+                    setCategories({
                       category: "graphic",
                       value: checked.target.checked,
                     })
@@ -92,7 +89,7 @@ function Register() {
                 onChange={(checked) => {
                   console.log("Sexual Content", checked.target.checked);
                   dispatch(
-                    setGroupQuestionCategories({
+                    setCategories({
                       category: "sexual",
                       value: checked.target.checked,
                     })
@@ -114,7 +111,7 @@ function Register() {
                 onChange={(checked) => {
                   console.log("Offensive Content", checked.target.checked);
                   dispatch(
-                    setGroupQuestionCategories({
+                    setCategories({
                       category: "offensive",
                       value: checked.target.checked,
                     })
@@ -136,7 +133,7 @@ function Register() {
                 onChange={(checked) => {
                   console.log("Phobic Content", checked.target.checked);
                   dispatch(
-                    setGroupQuestionCategories({
+                    setCategories({
                       category: "phobic",
                       value: checked.target.checked,
                     })
