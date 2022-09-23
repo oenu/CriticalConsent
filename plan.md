@@ -2,7 +2,22 @@ Move functions into their own smaller slicers and rework the names of the slicer
 
 - New slicers
 
-AppSlice - Handles app state such as dark mode, and whether app burger menu is open.
-QuestionSlice - Handles questions received from the supabase database.
-RegistrationSlice - Handles registration of new surveys.
-SurveySlice - Handles the display of the survey itself and the submission of the survey to the supabase database
+## AppSlice
+
+Handles app state such as dark mode, and whether app burger menu is open.
+
+## QuestionSlice
+
+Handles questions received from the supabase database.
+
+## RegistrationSlice
+
+Handles registration of new surveys.
+
+## SurveySlice
+
+Handles the display of the survey itself and the submission of the survey to the supabase database.
+
+## GroupSlice
+
+Handles the current group that the survey is associated with.
