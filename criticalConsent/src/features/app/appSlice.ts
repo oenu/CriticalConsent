@@ -4,15 +4,11 @@ import { RootState } from "../../redux/store";
 export interface AppState {
   darkMode: boolean;
   burgerMenuOpen: boolean;
-  showAdultContent: boolean;
-  acceptAdultDisclaimer: boolean;
 }
 
 const initialState: AppState = {
   darkMode: false,
   burgerMenuOpen: false,
-  showAdultContent: false,
-  acceptAdultDisclaimer: false,
 };
 
 const appSlice = createSlice({
@@ -40,14 +36,6 @@ export const selectDarkMode = (state: RootState) => state.app.darkMode;
 // Export whether the burger menu is open
 export const selectBurgerMenuOpen = (state: RootState) =>
   state.app.burgerMenuOpen;
-
-// Export whether to show adult content
-export const selectShowAdultContent = (state: RootState) =>
-  state.app.showAdultContent;
-
-// Export whether the survey creator has accepted adult content disclaimer
-export const selectAcceptAdultDisclaimer = (state: RootState) =>
-  state.app.acceptAdultDisclaimer;
 
 // Export reducer actions
 export const { toggleDarkMode, toggleBurgerMenu, closeBurgerMenu } =
