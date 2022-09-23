@@ -1,12 +1,12 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { RootState } from "../../redux/store";
-import { GroupType, QuestionCategories } from "./../../types.d";
+import { GroupType } from "./../../types.d";
 import { supabase } from "./../../utils/supabaseClient";
 export interface GroupState {
   // Group Information
   id: number | null;
   name: string | null;
-  nsfw: boolean | null;
+  adult_content: boolean | null;
 
   // Question Categories Accepted by the Group
   graphic_content: boolean | null;
@@ -22,7 +22,7 @@ export interface GroupState {
 const initialState: GroupState = {
   id: null,
   name: null,
-  nsfw: null,
+  adult_content: null,
 
   graphic_content: null,
   offensive_content: null,
@@ -38,29 +38,6 @@ const groupSlice = createSlice({
   initialState,
   reducers: {
     // Set the question categories accepted by the group
-    setGroupQuestionCategories: (state, action) => {
-      console.debug("setGroupQuestionCategories", action.payload);
-      switch (action.payload.category) {
-        case "graphic":
-          state.graphic_content = action.payload.value;
-          break;
-        case "offensive":
-          state.offensive_content = action.payload.value;
-          break;
-        case "phobic":
-          state.phobic_content = action.payload.value;
-          break;
-        case "sexual":
-          state.sexual_content = action.payload.value;
-          break;
-        case "clear":
-          state.graphic_content = null;
-          state.offensive_content = null;
-          state.phobic_content = null;
-          state.sexual_content = null;
-          break;
-      }
-    },
   },
   extraReducers(builder) {
     // Update the group status to Loading, meaning the group is being fetched and a loading element should be displayed
@@ -74,7 +51,7 @@ const groupSlice = createSlice({
       // Group Information
       state.id = action.payload.id;
       state.name = action.payload.name;
-      state.nsfw = action.payload.nsfw;
+      state.adult_content = action.payload.adult_content;
 
       // Question Categories Accepted by the Group
       state.graphic_content = action.payload.graphic_content;
@@ -116,14 +93,12 @@ export const fetchGroupByIdAsync = createAsyncThunk(
   }
 );
 
-// Export reducer actions
-export const { setGroupQuestionCategories } = groupSlice.actions;
-
 // Export const equal to the group_id
 export const getGroupId = (state: RootState) => state.group.id;
 
 // Export whether the group accepts adult content at all
-export const getShowAdultContent = (state: RootState) => state.group.nsfw;
+export const getShowAdultContent = (state: RootState) =>
+  state.group.adult_content;
 
 // Export array of question categories accepted by the group
 export const getGroupCategories = (
