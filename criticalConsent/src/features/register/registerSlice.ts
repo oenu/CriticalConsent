@@ -1,6 +1,5 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 import { RootState } from "../../redux/store";
-import { GroupType, QuestionCategories } from "./../../types.d";
 import { supabase } from "./../../utils/supabaseClient";
 
 export interface RegisterState {
