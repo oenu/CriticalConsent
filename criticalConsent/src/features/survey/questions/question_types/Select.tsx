@@ -1,7 +1,7 @@
 import { Button, Card, Divider, Grid, Paper, Text } from "@mantine/core";
 import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
 import { QuestionType } from "../../../../types";
-import { getHighlightUnanswered, selectResponse } from "../../surveySlice";
+import { selectHighlightUnanswered, selectResponse } from "../../surveySlice";
 
 function Select({
   question,
@@ -14,7 +14,7 @@ function Select({
   const dispatch = useAppDispatch();
 
   // Whether to highlight unanswered questions
-  const highlightUnanswered = useAppSelector(getHighlightUnanswered);
+  const highlightUnanswered = useAppSelector(selectHighlightUnanswered);
 
   // Color to highlight unanswered questions
   const highlightColor = "red";
