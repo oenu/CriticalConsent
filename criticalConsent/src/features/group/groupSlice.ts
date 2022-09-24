@@ -7,6 +7,7 @@ export interface GroupState {
   id: string | null;
   name: string | null;
   mature_content: boolean | null;
+  word_code: string | null;
 
   // Question Categories Accepted by the Group
   graphic_content: boolean | null;
@@ -15,14 +16,18 @@ export interface GroupState {
   sexual_content: boolean | null;
 
   // Group Thunk State
-  status: "idle" | "loading" | "succeeded" | "failed";
+  status: "idle" | "loading" | "succeeded" | "failed" | "not_found";
   error: string | null;
+
+  // Group Validation
+  group_id_valid: boolean | null;
 }
 
 const initialState: GroupState = {
   id: null,
   name: null,
   mature_content: null,
+  word_code: null,
 
   graphic_content: null,
   offensive_content: null,
@@ -31,6 +36,7 @@ const initialState: GroupState = {
 
   status: "idle",
   error: null,
+  group_id_valid: null,
 };
 
 const groupSlice = createSlice({
@@ -47,17 +53,25 @@ const groupSlice = createSlice({
 
     // Update the group status to Succeeded, meaning the group has been fetched and the group information should be set
     builder.addCase(fetchGroupByIdAsync.fulfilled, (state, action) => {
-      state.status = "succeeded";
-      // Group Information
-      state.id = action.payload.id;
-      state.name = action.payload.name;
-      state.mature_content = action.payload.mature_content;
+      // Check if the group exists
+      if (action.payload === undefined) {
+        state.group_id_valid = false;
+        state.status = "not_found";
+        console.warn("Unknown Group ID");
+      } else {
+        // Group Information
+        state.status = "succeeded";
+        state.id = action.payload.id;
+        state.name = action.payload.name;
+        state.mature_content = action.payload.mature_content;
+        state.group_id_valid = true;
 
-      // Question Categories Accepted by the Group
-      state.graphic_content = action.payload.graphic_content;
-      state.offensive_content = action.payload.offensive_content;
-      state.phobic_content = action.payload.phobic_content;
-      state.sexual_content = action.payload.sexual_content;
+        // Question Categories Accepted by the Group
+        state.graphic_content = action.payload.graphic_content;
+        state.offensive_content = action.payload.offensive_content;
+        state.phobic_content = action.payload.phobic_content;
+        state.sexual_content = action.payload.sexual_content;
+      }
     });
 
     // Update the group status to Failed, meaning the group has failed to be fetched and an error message should be displayed
@@ -84,6 +98,7 @@ export const fetchGroupByIdAsync = createAsyncThunk(
         throw error;
       } else {
         console.debug("fetched group", data);
+
         return data[0];
       }
     } catch (error) {
@@ -98,6 +113,9 @@ export const getGroupId = (state: RootState) => state.group.id;
 
 // Export const equal to the group_name
 export const getGroupName = (state: RootState) => state.group.name;
+
+// Export whether the group is unknown
+export const getGroupIdValid = (state: RootState) => state.group.group_id_valid;
 
 // Export whether the group accepts mature content at all
 export const getShowMatureContent = (state: RootState) =>
