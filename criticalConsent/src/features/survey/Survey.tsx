@@ -25,9 +25,9 @@ export default function Survey() {
   if (group_id !== undefined) {
     // Check the group ID against the database and retrieve the group preferences
     useEffect(() => {
-      dispatch(fetchGroupByIdAsync(parseInt(group_id))).then((res) => {
+      dispatch(fetchGroupByIdAsync(group_id)).then((res) => {
         //HACK: This is a hack to get the group ID to update
-        dispatch(setQuestionGroupId(parseInt(group_id)));
+        dispatch(setQuestionGroupId(group_id));
       });
     }, [dispatch, group_id]);
     return <QuestionList />;

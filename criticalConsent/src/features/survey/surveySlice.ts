@@ -13,7 +13,7 @@ export interface SurveyState {
   status: "idle" | "loading" | "succeeded" | "failed";
   error: string | null;
   highlightUnanswered: boolean;
-  group_id: number | null;
+  group_id: string | null;
 }
 
 // Define the initial state using the SurveyState type
@@ -100,7 +100,7 @@ const surveySlice = createSlice({
         question.opt_in = action.payload.opt_in;
       }
     },
-    setQuestionGroupId(state, action: PayloadAction<number>) {
+    setQuestionGroupId(state, action: PayloadAction<string>) {
       // HACK: This is a hack to get the group id into the store as I am not sure how to access the group store here
       // Set the group id in question state
       state.group_id = action.payload;

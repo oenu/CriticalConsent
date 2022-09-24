@@ -36,7 +36,7 @@ export interface QuestionType {
 
 // Type for the group identifier from the database
 export interface GroupType {
-  id: number;
+  id: string;
   name: string;
   shortid: string;
   mature_content: boolean;
@@ -53,5 +53,5 @@ export interface UploadType {
   select_mid: boolean;
   select_high: boolean;
   answered: boolean;
-  group_id: number;
+  group_id: string;
 }

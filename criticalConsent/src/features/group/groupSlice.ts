@@ -4,7 +4,7 @@ import { GroupType } from "./../../types.d";
 import { supabase } from "./../../utils/supabaseClient";
 export interface GroupState {
   // Group Information
-  id: number | null;
+  id: string | null;
   name: string | null;
   mature_content: boolean | null;
 
@@ -72,13 +72,13 @@ const groupSlice = createSlice({
 // Fetch group async thunk
 export const fetchGroupByIdAsync = createAsyncThunk(
   "group/fetchGroupByIdAsync",
-  async (group_id: number): Promise<GroupType> => {
+  async (group_id: string): Promise<GroupType> => {
     try {
       console.debug("Fetching group...");
       const { data, error } = await supabase
         .from("groups")
         .select("*")
-        .eq("id", group_id);
+        .eq("uuid", group_id);
       if (error) {
         console.warn("error fetching group!", error);
         throw error;
