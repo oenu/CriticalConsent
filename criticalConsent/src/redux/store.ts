@@ -9,6 +9,7 @@ import surveyReducer from "../features/survey/surveySlice";
 import groupReducer from "../features/group/groupSlice";
 import appReducer from "../features/app/appSlice";
 import registerReducer from "../features/register/registerSlice";
+import dashboardReducer from "../features/dashboard/dashboardSlice";
 
 // Combine reducers to create a root reducer
 const rootReducer = combineReducers({
@@ -16,6 +17,7 @@ const rootReducer = combineReducers({
   group: groupReducer,
   app: appReducer,
   register: registerReducer,
+  dashboard: dashboardReducer,
 });
 
 // Use the root reducer to create a store
