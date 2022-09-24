@@ -196,6 +196,7 @@ const registerSlice = createSlice({
             phobic_content: state.phobic_content,
             sexual_content: state.sexual_content,
             disclaimers_accepted: state.disclaimers_accepted,
+            mature: state.mature_content,
           },
         ])
         .then((response) => {
