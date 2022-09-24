@@ -16,6 +16,7 @@
     "@reduxjs/toolkit": "^1.8.5",
     "@supabase/supabase-js": "^1.35.6",
     "@tabler/icons": "^1.96.0",
+    "random-words": "^1.2.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-redux": "^8.0.2",
