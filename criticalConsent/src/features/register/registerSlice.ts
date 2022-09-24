@@ -1,8 +1,25 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { RootState } from "../../redux/store";
 import { supabase } from "./../../utils/supabaseClient";
 
 import randomWords from "random-words";
+
+export interface RegistrationResponse {
+  // This is the response from the server on successful registration
+  id: number;
+  created_at: string;
+  mature: boolean;
+  name: string;
+  graphic_content: boolean;
+  offensive_content: boolean;
+  phobic_content: boolean;
+  sexual_content: boolean;
+  password_protected: boolean;
+  password: string | null;
+  disclaimers_accepted: boolean;
+  uuid: string;
+  word_code: string;
+}
 
 export interface RegisterState {
   // Group name
@@ -32,7 +49,12 @@ export interface RegisterState {
   disclaimer_modal: boolean;
 
   // Register Error Message
-  register_error: string | null;
+  upload_error: string | null;
+  upload_status: "loading" | "failed" | "success" | "idle";
+  upload_response: RegistrationResponse | null;
+
+  // Upload Content Validation - Whether the content to be uploaded is valid
+  upload_content_valid: boolean | null;
 }
 
 const initialState: RegisterState = {
@@ -54,7 +76,11 @@ const initialState: RegisterState = {
   disclaimer_warning: false,
   disclaimer_modal: false,
 
-  register_error: null,
+  upload_error: null,
+  upload_status: "idle",
+  upload_response: null,
+
+  upload_content_valid: null,
 };
 
 const registerSlice = createSlice({
@@ -148,13 +174,16 @@ const registerSlice = createSlice({
       state.disclaimer_modal = action.payload;
     },
 
-    // Check if categories have been set and if disclaimers have been accepted
-    uploadRegistration: (state) => {
+    // Upload the registration data to the server
+    validateRegistration: (state) => {
+      console.debug("Uploading new group");
+      console.debug("Group name:", state.group_name);
       // Check if the user has set a group name
       if (state.group_name === null) {
         console.error("No group name set");
         state.group_name_warning = true;
-        return;
+        state.upload_content_valid = false;
+        throw new Error("No group name set");
       }
 
       // If the user has not enabled a password, set the password field to null
@@ -165,7 +194,8 @@ const registerSlice = createSlice({
       if (state.password_protected && state.password === null) {
         console.error("No group password set");
         state.password_warning = true;
-        return;
+        state.upload_content_valid = false;
+        throw new Error("No group password set");
       }
 
       // Check if the user has enabled mature content, if not disable all content categories
@@ -179,44 +209,98 @@ const registerSlice = createSlice({
       // Check if the user has accepted the disclaimers
       if (!state.disclaimers_accepted) {
         console.error("Disclaimers not accepted");
-        return;
+        state.disclaimer_warning = true;
+        state.upload_content_valid = false;
+        throw new Error("Disclaimers not accepted");
       }
 
       // If all checks pass, upload the registration to the database
       console.debug("Registration passed all checks");
       console.debug("Group name:", state.group_name);
 
-      // Generate a random word code
-      const word_code = randomWords({ exactly: 3, join: "-" });
-
-      // Create a new group in the database
-      console.debug("Uploading new group");
-      supabase
-        .from("groups")
-        .insert([
-          {
-            name: state.group_name,
-            password_protected: state.password_protected,
-            password: state.password,
-            graphic_content: state.graphic_content,
-            offensive_content: state.offensive_content,
-            phobic_content: state.phobic_content,
-            sexual_content: state.sexual_content,
-            disclaimers_accepted: state.disclaimers_accepted,
-            mature: state.mature_content,
-            word_code,
-          },
-        ])
-        .then((response) => {
-          console.debug("Response:", response);
-          if (response.error) {
-            state.register_error = response.error.message;
-            console.error(response.error);
-          }
-        });
+      // Set the status to valid
+      state.upload_content_valid = true;
+    },
+    // Reset the registration process
+    clearRegistration: (state) => {
+      console.debug("Clearing registration");
+      state.group_name = null;
+      state.group_name_warning = false;
+      state.password_protected = false;
+      state.password = null;
+      state.password_warning = false;
+      state.mature_content = false;
+      state.graphic_content = false;
+      state.offensive_content = false;
+      state.phobic_content = false;
+      state.sexual_content = false;
+      state.disclaimers_accepted = false;
+      state.disclaimer_warning = false;
+      state.disclaimer_modal = false;
+      state.upload_error = null;
+      state.upload_status = "idle";
+      state.upload_response = null;
+      state.upload_content_valid = null;
+      state.word_code = null;
     },
   },
+  extraReducers: (builder) => {
+    builder
+      .addCase(uploadRegistrationAsync.pending, (state) => {
+        state.upload_status = "loading";
+        console.debug("uploadRegistrationAsync.pending");
+      })
+      .addCase(uploadRegistrationAsync.fulfilled, (state, action) => {
+        state.upload_status = "success";
+
+        console.debug("uploadRegistrationAsync.fulfilled", action.payload);
+      })
+      .addCase(uploadRegistrationAsync.rejected, (state, action) => {
+        state.upload_status = "failed";
+        state.upload_error = action.error.message || "Unknown error";
+        console.debug("uploadRegistrationAsync.rejected", action.error);
+      });
+  },
 });
+
+// Registration Async Thunk
+export const uploadRegistrationAsync = createAsyncThunk(
+  "registration/registerGroup",
+  async (arg_, { getState }): Promise<RegistrationResponse> => {
+    const state = getState() as RootState;
+
+    // Generate a random word code
+    const word_code = randomWords({ exactly: 3, join: "-" });
+
+    // Create a new group in the database
+    console.debug("Uploading new group");
+    const { data, error } = await supabase.from("groups").insert([
+      {
+        name: state.register.group_name,
+        password_protected: state.register.password_protected,
+        password: state.register.password,
+        graphic_content: state.register.graphic_content,
+        offensive_content: state.register.offensive_content,
+        phobic_content: state.register.phobic_content,
+        sexual_content: state.register.sexual_content,
+        disclaimers_accepted: state.register.disclaimers_accepted,
+        mature: state.register.mature_content,
+        word_code,
+      },
+    ]);
+
+    if (error) {
+      console.error("Error uploading new group:", error);
+      throw new Error(error.message);
+    } else if (data) {
+      console.debug("Group upload response:", data);
+      return data[0];
+    } else {
+      console.error("Unknown error uploading new group");
+      throw new Error("Unknown error uploading new group");
+    }
+  }
+);
 
 // Export reducer actions
 export const {
@@ -230,7 +314,8 @@ export const {
   setDisclaimersAccepted,
   setDisclaimerWarning,
   setDisclaimerModalShown,
-  uploadRegistration,
+  validateRegistration,
+  clearRegistration,
 } = registerSlice.actions;
 
 // Export Selectors
@@ -238,6 +323,14 @@ export const selectGroupName = (state: RootState) => ({
   group_name: state.register.group_name,
   group_name_warning: state.register.group_name_warning,
 });
+
+// Selector for if the upload content has been processed and validated
+export const selectUploadContentValid = (state: RootState) =>
+  state.register.upload_content_valid;
+
+// Selector for register status
+export const selectUploadStatus = (state: RootState) =>
+  state.register.upload_status;
 
 export const selectGroupPassword = (state: RootState) => ({
   password_protected: state.register.password_protected,
