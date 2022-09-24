@@ -178,7 +178,7 @@ export const fetchQuestionsAsync = createAsyncThunk(
 
 // Selectors for questions in the survey
 export const selectAllQuestions = (state: RootState) => state.survey.questions;
-export const selectQuestionsStatus = (state: RootState) => state.survey.status;
+export const selectSurveyStatus = (state: RootState) => state.survey.status;
 export const selectQuestionsError = (state: RootState) => state.survey.error;
 export const selectHighlightUnanswered = (state: RootState) =>
   state.survey.highlightUnanswered;
