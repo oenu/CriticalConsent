@@ -13,7 +13,11 @@ export interface SurveyState {
   status: "idle" | "loading" | "succeeded" | "failed";
   error: string | null;
   highlightUnanswered: boolean;
-  group_id: number | null;
+  group_id: string | null;
+
+  // Survey word_code state
+  word_code: string | null;
+  word_code_valid: boolean | null;
 }
 
 // Define the initial state using the SurveyState type
@@ -23,6 +27,9 @@ const initialState: SurveyState = {
   error: null,
   highlightUnanswered: false,
   group_id: null,
+
+  word_code: null,
+  word_code_valid: null,
 };
 
 // Useful types for Question Response types in the survey
@@ -100,10 +107,26 @@ const surveySlice = createSlice({
         question.opt_in = action.payload.opt_in;
       }
     },
-    setQuestionGroupId(state, action: PayloadAction<number>) {
+    setQuestionGroupId(state, action: PayloadAction<string>) {
       // HACK: This is a hack to get the group id into the store as I am not sure how to access the group store here
       // Set the group id in question state
       state.group_id = action.payload;
+    },
+    setWordCode(state, action: PayloadAction<string>) {
+      // Set the word code in the store, used when first entering the survey
+      console.log("setWordCode", action.payload);
+      state.word_code = action.payload;
+    },
+    clearSurvey(state) {
+      // Clear the survey state
+      console.log("clearSurvey");
+      state.questions = [];
+      state.status = "idle";
+      state.error = null;
+      state.highlightUnanswered = false;
+      state.group_id = null;
+      state.word_code = null;
+      state.word_code_valid = null;
     },
   },
   extraReducers(builder) {
@@ -153,16 +176,27 @@ export const fetchQuestionsAsync = createAsyncThunk(
   }
 );
 
-// Export constants for selectors
+// Selectors for questions in the survey
 export const selectAllQuestions = (state: RootState) => state.survey.questions;
-export const getQuestionsStatus = (state: RootState) => state.survey.status;
-export const getQuestionsError = (state: RootState) => state.survey.error;
-export const getHighlightUnanswered = (state: RootState) =>
+export const selectQuestionsStatus = (state: RootState) => state.survey.status;
+export const selectQuestionsError = (state: RootState) => state.survey.error;
+export const selectHighlightUnanswered = (state: RootState) =>
   state.survey.highlightUnanswered;
 
+// Selectors for word code in the survey
+export const selectWordCode = (state: RootState) => state.survey.word_code;
+export const selectWordCodeValid = (state: RootState) =>
+  state.survey.word_code_valid;
+
 // Export reducer actions
-export const { selectResponse, uploadResponse, setOptIn, setQuestionGroupId } =
-  surveySlice.actions;
+export const {
+  clearSurvey,
+  selectResponse,
+  uploadResponse,
+  setOptIn,
+  setQuestionGroupId,
+  setWordCode,
+} = surveySlice.actions;
 
 // Export reducer
 export default surveySlice.reducer;

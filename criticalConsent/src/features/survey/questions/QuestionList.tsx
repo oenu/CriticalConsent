@@ -6,8 +6,8 @@ import Question from "./Question";
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 import {
   fetchQuestionsAsync,
-  getHighlightUnanswered,
-  getQuestionsStatus,
+  selectHighlightUnanswered,
+  selectQuestionsStatus,
   selectAllQuestions,
   uploadResponse,
 } from "../surveySlice";
@@ -15,26 +15,29 @@ import {
 // Types
 import { useEffect } from "react";
 import { QuestionType } from "../../../types";
-import { getGroupCategories } from "../../group/groupSlice";
+import { selectGroupCategories, selectGroupName } from "../../group/groupSlice";
 
 function QuestionList() {
   // Redux wrapper for dispatch
   const dispatch = useAppDispatch();
 
   // Status of the retrieval of questions from the Database
-  const questionsStatus = useAppSelector(getQuestionsStatus);
+  const questionsStatus = useAppSelector(selectQuestionsStatus);
 
   // List of questions from the Database
   const questions = useAppSelector(selectAllQuestions);
 
   // Whether to highlight unanswered questions and show a warning
-  const highlightUnanswered = useAppSelector(getHighlightUnanswered);
+  const highlightUnanswered = useAppSelector(selectHighlightUnanswered);
+
+  // Group name of the current survey
+  const group_name = useAppSelector(selectGroupName);
 
   // A list of questions in array form
   const questionList = Object.values(questions);
 
   // Array of strings corresponding to the categories the group wants to see
-  const groupCategories = useAppSelector(getGroupCategories);
+  const groupCategories = useAppSelector(selectGroupCategories);
 
   // Warning Message if not all questions are answered
   const warningMessage = (
@@ -84,7 +87,7 @@ function QuestionList() {
 
         content = (
           <Stack style={{ minWidth: "80vw" }}>
-            <Title>General</Title>
+            <Title>{group_name}</Title>
             {categorizedQuestions["general"].map((question: QuestionType) => {
               if (question !== null) {
                 return <Question key={question.id} question={question} />;
@@ -96,7 +99,7 @@ function QuestionList() {
               // Ignore the general category from the list of sub categories
               if (category !== "general") {
                 if (categorizedQuestions[category].length > 0) {
-                  if (Object.keys(groupCategories).includes(category)) {
+                  if (groupCategories[category]) {
                     return (
                       <div key={category}>
                         <Divider mt={"xs"} mb={"md"} />
