@@ -17,6 +17,7 @@ import {
 } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 
@@ -45,6 +46,9 @@ import {
 function Register() {
   // Redux wrapper for dispatch
   const dispatch = useAppDispatch();
+
+  // Navigation
+  const navigate = useNavigate();
 
   // Whether the app is being viewed on a mobile device
   const mobileView = useMediaQuery("(max-width: 600px)");
@@ -367,8 +371,16 @@ function Register() {
       break;
     case "success":
       return (
+        // Show success message, and link to dashboard
         <Center>
           <Alert>Survey Created!</Alert>
+          <Button
+            onClick={() => {
+              navigate("/dashboard");
+            }}
+          >
+            Go to Dashboard
+          </Button>
         </Center>
       );
       break;
