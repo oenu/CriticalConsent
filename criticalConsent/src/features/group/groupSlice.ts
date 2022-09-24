@@ -7,7 +7,7 @@ export interface GroupState {
   id: string | null;
   name: string | null;
   mature_content: boolean | null;
-  word_code: string | null;
+  share_code: string | null;
 
   // Question Categories Accepted by the Group
   graphic_content: boolean | null;
@@ -27,7 +27,7 @@ const initialState: GroupState = {
   id: null,
   name: null,
   mature_content: null,
-  word_code: null,
+  share_code: null,
 
   graphic_content: null,
   offensive_content: null,
@@ -48,7 +48,7 @@ const groupSlice = createSlice({
       state.id = null;
       state.name = null;
       state.mature_content = null;
-      state.word_code = null;
+      state.share_code = null;
 
       state.graphic_content = null;
       state.offensive_content = null;
@@ -103,9 +103,9 @@ export const fetchGroupAsync = createAsyncThunk(
   "group/fetchGroupAsync",
   async (group: {
     group_id?: string;
-    word_code?: string;
+    share_code?: string;
   }): Promise<GroupType> => {
-    const { group_id, word_code } = group;
+    const { group_id, share_code } = group;
 
     if (group_id) {
       // Get the group from the database using the group_id
@@ -127,14 +127,14 @@ export const fetchGroupAsync = createAsyncThunk(
         console.error(error);
         throw error;
       }
-    } else if (word_code) {
-      // Get the group from the database using the word_code
+    } else if (share_code) {
+      // Get the group from the database using the share_code
       try {
-        console.debug("Fetching group with word code...");
+        console.debug("Fetching group with share code...");
         const { data, error } = await supabase
           .from("groups")
           .select("*")
-          .eq("word_code", word_code);
+          .eq("share_code", share_code);
         if (error) {
           console.warn("error fetching group!", error);
           throw error;
@@ -148,8 +148,8 @@ export const fetchGroupAsync = createAsyncThunk(
         throw error;
       }
     } else {
-      console.warn("No group_id or word_code provided");
-      throw new Error("No group_id or word_code provided");
+      console.warn("No group_id or share_code provided");
+      throw new Error("No group_id or share_code provided");
     }
   }
 );

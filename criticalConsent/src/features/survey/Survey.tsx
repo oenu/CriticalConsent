@@ -28,9 +28,9 @@ import {
 } from "../group/groupSlice";
 import {
   clearSurvey,
-  selectWordCode,
+  selectShareCode as selectShareCode,
   setQuestionGroupId,
-  setWordCode,
+  setShareCode,
 } from "./surveySlice";
 
 // Features
@@ -52,8 +52,8 @@ export default function Survey() {
   // Get group loading status
   const groupStatus = useAppSelector(selectGroupStatus);
 
-  // Get word code
-  const word_code = useAppSelector(selectWordCode);
+  // Get share code
+  const share_code = useAppSelector(selectShareCode);
 
   let content = null;
 
@@ -102,14 +102,14 @@ export default function Survey() {
               <TextInput
                 placeholder="dog-expressive-house"
                 onBlur={(e) => {
-                  dispatch(setWordCode(e.target.value));
+                  dispatch(setShareCode(e.target.value));
                 }}
               />
               {/* TODO: Add value to text area */}
               <Button
                 onClick={() => {
-                  if (word_code) {
-                    dispatch(fetchGroupAsync({ word_code }));
+                  if (share_code) {
+                    dispatch(fetchGroupAsync({ share_code }));
                   }
                 }}
               >

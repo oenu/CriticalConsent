@@ -15,9 +15,9 @@ export interface SurveyState {
   highlightUnanswered: boolean;
   group_id: string | null;
 
-  // Survey word_code state
-  word_code: string | null;
-  word_code_valid: boolean | null;
+  // Survey share_code state
+  share_code: string | null;
+  share_code_valid: boolean | null;
 }
 
 // Define the initial state using the SurveyState type
@@ -28,8 +28,8 @@ const initialState: SurveyState = {
   highlightUnanswered: false,
   group_id: null,
 
-  word_code: null,
-  word_code_valid: null,
+  share_code: null,
+  share_code_valid: null,
 };
 
 // Useful types for Question Response types in the survey
@@ -112,10 +112,10 @@ const surveySlice = createSlice({
       // Set the group id in question state
       state.group_id = action.payload;
     },
-    setWordCode(state, action: PayloadAction<string>) {
-      // Set the word code in the store, used when first entering the survey
-      console.log("setWordCode", action.payload);
-      state.word_code = action.payload;
+    setShareCode(state, action: PayloadAction<string>) {
+      // Set the share code in the store, used when first entering the survey
+      console.log("setShareCode", action.payload);
+      state.share_code = action.payload;
     },
     clearSurvey(state) {
       // Clear the survey state
@@ -125,8 +125,8 @@ const surveySlice = createSlice({
       state.error = null;
       state.highlightUnanswered = false;
       state.group_id = null;
-      state.word_code = null;
-      state.word_code_valid = null;
+      state.share_code = null;
+      state.share_code_valid = null;
     },
   },
   extraReducers(builder) {
@@ -183,10 +183,10 @@ export const selectQuestionsError = (state: RootState) => state.survey.error;
 export const selectHighlightUnanswered = (state: RootState) =>
   state.survey.highlightUnanswered;
 
-// Selectors for word code in the survey
-export const selectWordCode = (state: RootState) => state.survey.word_code;
-export const selectWordCodeValid = (state: RootState) =>
-  state.survey.word_code_valid;
+// Selectors for share code in the survey
+export const selectShareCode = (state: RootState) => state.survey.share_code;
+export const selectShareCodeValid = (state: RootState) =>
+  state.survey.share_code_valid;
 
 // Export reducer actions
 export const {
@@ -195,7 +195,7 @@ export const {
   uploadResponse,
   setOptIn,
   setQuestionGroupId,
-  setWordCode,
+  setShareCode,
 } = surveySlice.actions;
 
 // Export reducer

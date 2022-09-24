@@ -18,7 +18,7 @@ export interface RegistrationResponse {
   password: string | null;
   disclaimers_accepted: boolean;
   uuid: string;
-  word_code: string;
+  share_code: string;
 }
 
 export interface RegisterState {
@@ -26,7 +26,7 @@ export interface RegisterState {
   group_name: string | null;
   // Whether to show a warning that the group name has not been set
   group_name_warning: boolean;
-  word_code: string | null;
+  share_code: string | null;
 
   // Group password
   password_protected: boolean;
@@ -60,7 +60,7 @@ export interface RegisterState {
 const initialState: RegisterState = {
   group_name: null,
   group_name_warning: false,
-  word_code: null,
+  share_code: null,
 
   password_protected: false,
   password: null,
@@ -241,7 +241,7 @@ const registerSlice = createSlice({
       state.upload_status = "idle";
       state.upload_response = null;
       state.upload_content_valid = null;
-      state.word_code = null;
+      state.share_code = null;
     },
   },
   extraReducers: (builder) => {
@@ -269,8 +269,8 @@ export const uploadRegistrationAsync = createAsyncThunk(
   async (arg_, { getState }): Promise<RegistrationResponse> => {
     const state = getState() as RootState;
 
-    // Generate a random word code
-    const word_code = randomWords({ exactly: 3, join: "-" });
+    // Generate a random share code
+    const share_code = randomWords({ exactly: 3, join: "-" });
 
     // Create a new group in the database
     console.debug("Uploading new group");
@@ -285,7 +285,7 @@ export const uploadRegistrationAsync = createAsyncThunk(
         sexual_content: state.register.sexual_content,
         disclaimers_accepted: state.register.disclaimers_accepted,
         mature: state.register.mature_content,
-        word_code,
+        share_code,
       },
     ]);
 
