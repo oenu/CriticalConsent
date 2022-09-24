@@ -2,11 +2,14 @@ import { createSlice } from "@reduxjs/toolkit";
 import { RootState } from "../../redux/store";
 import { supabase } from "./../../utils/supabaseClient";
 
+import randomWords from "random-words";
+
 export interface RegisterState {
   // Group name
   group_name: string | null;
   // Whether to show a warning that the group name has not been set
   group_name_warning: boolean;
+  word_code: string | null;
 
   // Group password
   password_protected: boolean;
@@ -35,6 +38,7 @@ export interface RegisterState {
 const initialState: RegisterState = {
   group_name: null,
   group_name_warning: false,
+  word_code: null,
 
   password_protected: false,
   password: null,
@@ -182,6 +186,9 @@ const registerSlice = createSlice({
       console.debug("Registration passed all checks");
       console.debug("Group name:", state.group_name);
 
+      // Generate a random word code
+      const word_code = randomWords({ exactly: 3, join: "-" });
+
       // Create a new group in the database
       console.debug("Uploading new group");
       supabase
@@ -197,6 +204,7 @@ const registerSlice = createSlice({
             sexual_content: state.sexual_content,
             disclaimers_accepted: state.disclaimers_accepted,
             mature: state.mature_content,
+            word_code,
           },
         ])
         .then((response) => {
