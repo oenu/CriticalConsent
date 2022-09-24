@@ -8,11 +8,11 @@ export enum QuestionTypes {
 }
 
 export enum QuestionCategories {
-  sexual = "sexual",
-  graphic = "graphic",
-  offensive = "offensive",
-  phobic = "phobic",
-  general = "general",
+  "sexual",
+  "graphic",
+  "offensive",
+  "phobic",
+  "general",
 }
 
 // Type for questions from the database extended with answered and selected properties
@@ -36,7 +36,7 @@ export interface QuestionType {
 
 // Type for the group identifier from the database
 export interface GroupType {
-  id: string;
+  uuid: string;
   name: string;
   shortid: string;
   mature_content: boolean;
