@@ -150,7 +150,7 @@ export default function Survey() {
               navigate("/survey");
             }}
           >
-            Exit Survey
+            Log Out
           </Button>
           <Divider my="md" />
           <QuestionList />
