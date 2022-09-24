@@ -44,6 +44,7 @@ export interface GroupType {
   offensive_content: boolean;
   phobic_content: boolean;
   sexual_content: boolean;
+  word_code: string;
 }
 
 // Type for uploading a response to the database
@@ -54,4 +55,5 @@ export interface UploadType {
   select_high: boolean;
   answered: boolean;
   group_id: string;
+  word_code: string;
 }
