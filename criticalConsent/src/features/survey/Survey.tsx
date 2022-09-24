@@ -3,10 +3,12 @@ import { useEffect } from "react";
 // Mantine Components
 import {
   Alert,
+  Box,
   Button,
   Card,
   Center,
   Container,
+  Divider,
   Stack,
   Text,
   TextInput,
@@ -19,12 +21,17 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 // Redux
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import {
-  fetchGroupByIdAsync,
-  getGroupId,
-  getGroupIdValid,
-  getGroupStatus,
+  clearGroup,
+  fetchGroupAsync,
+  selectGroupId,
+  selectGroupStatus,
 } from "../group/groupSlice";
-import { setQuestionGroupId } from "./surveySlice";
+import {
+  clearSurvey,
+  selectWordCode,
+  setQuestionGroupId,
+  setWordCode,
+} from "./surveySlice";
 
 // Features
 import QuestionList from "./questions/QuestionList";
@@ -37,23 +44,23 @@ export default function Survey() {
   const { group_url_id } = useParams();
 
   // Select the group from the group store
-  const group_id = useAppSelector(getGroupId);
-
-  // Select if the group_id is unknown
-  const group_id_valid = useAppSelector(getGroupIdValid);
+  const group_id = useAppSelector(selectGroupId);
 
   // Use Navigate
   const navigate = useNavigate();
 
   // Get group loading status
-  const groupStatus = useAppSelector(getGroupStatus);
+  const groupStatus = useAppSelector(selectGroupStatus);
+
+  // Get word code
+  const word_code = useAppSelector(selectWordCode);
 
   let content = null;
 
   // Check if a group id is in the url, if it is, check if it is valid and add to store
   useEffect(() => {
     if (groupStatus === "idle" && group_url_id) {
-      dispatch(fetchGroupByIdAsync(group_url_id));
+      dispatch(fetchGroupAsync({ group_id: group_url_id }));
     }
   }, [groupStatus, dispatch, group_url_id]);
 
@@ -62,6 +69,7 @@ export default function Survey() {
   useEffect(() => {
     if (groupStatus === "succeeded" && group_id) {
       dispatch(setQuestionGroupId(group_id));
+      navigate(`/survey/${group_id}`);
     }
   }, [groupStatus, dispatch, group_id]);
 
@@ -81,24 +89,39 @@ export default function Survey() {
           create a new survey.
         </Alert>
       ) : null}
+      {groupStatus === "failed" ? (
+        <Alert title={"Something went wrong"} color="orange">
+          Something went wrong. Please try again.
+        </Alert>
+      ) : null}
       <Center style={{ width: "100%", height: "60vh" }}>
         <Stack>
           <Card withBorder>
             <Stack align={"center"}>
               <Title order={3}>Survey Code</Title>
-
-              <TextInput placeholder="dog-expressive-house" />
+              <TextInput
+                placeholder="dog-expressive-house"
+                onBlur={(e) => {
+                  dispatch(setWordCode(e.target.value));
+                }}
+              />
               {/* TODO: Add value to text area */}
-              <Button component={Link} to={`/survey/${"thing"}`}>
+              <Button
+                onClick={() => {
+                  if (word_code) {
+                    dispatch(fetchGroupAsync({ word_code }));
+                  }
+                }}
+              >
                 Begin Survey
               </Button>
             </Stack>
           </Card>
           <Card withBorder>
             <Stack align={"center"}>
-              <Title order={3}> New group survey</Title>
+              <Title order={3}>New Survey</Title>
               <Button component={Link} to="/register">
-                Create new survey
+                Create New Survey
               </Button>
             </Stack>
           </Card>
@@ -116,7 +139,23 @@ export default function Survey() {
       );
       break;
     case "succeeded":
-      content = <QuestionList />;
+      content = (
+        <Box>
+          <Button
+            variant="light"
+            size="xs"
+            onClick={() => {
+              dispatch(clearGroup());
+              dispatch(clearSurvey());
+              navigate("/survey");
+            }}
+          >
+            Exit Survey
+          </Button>
+          <Divider my="md" />
+          <QuestionList />
+        </Box>
+      );
       break;
     case "failed":
       content = (
@@ -131,39 +170,6 @@ export default function Survey() {
     default:
       content = survey_prompt;
   }
-
-  // if (group_url_id === undefined || null) {
-  //   // If the group_url_id is undefined, show a message
-  //   content = (
-
-  //   );
-  // } else {
-  //   // Check the group ID against the database and retrieve the group preferences
-  //   useEffect(() => {
-  //     if (group_url_id) {
-  //       dispatch(fetchGroupByIdAsync(group_url_id)).then(() => {
-  //         // Check if the group ID is valid
-
-  //         if (group_id_valid) {
-
-  //           // If the group ID is valid, set the group ID in the survey store
-  //           dispatch(setQuestionGroupId(group_url_id));
-  //         } else {
-  //           // If the group ID is not valid, redirect to the survey page
-  //         }
-  //       });
-  //     }
-  //   }, [dispatch, group_url_id]);
-
-  //   // If the group ID is unknown, show a warning and a link to enter a new survey code
-
-  //   content = (
-  //     <>
-  //       {`${group_id_valid}`}
-  //       <QuestionList />
-  //     </>
-  //   );
-  // }
 
   return content;
 }
