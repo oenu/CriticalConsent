@@ -1,10 +1,7 @@
-import { useEffect, useState } from "react";
-
 // Mantine Components
 import {
   AppShell,
   Burger,
-  Container,
   Header,
   MediaQuery,
   Navbar,
@@ -22,10 +19,6 @@ import {
 } from "./features/app/appSlice";
 
 // Redux
-import {
-  fetchQuestionsAsync,
-  selectQuestionsStatus,
-} from "./features/survey/surveySlice";
 import { useAppDispatch, useAppSelector } from "./redux/hooks";
 
 export default function App() {
