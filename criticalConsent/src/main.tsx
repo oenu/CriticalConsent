@@ -17,6 +17,7 @@ import Landing from "./pages/landing/Landing";
 import Register from "./features/register/Register";
 import Survey from "./features/survey/Survey";
 import NotFound from "./pages/404/NotFound";
+import Dashboard from "./features/dashboard/Dashboard";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
@@ -42,6 +43,7 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
                 <Route path=":group_url_id" element={<Survey />} />
                 <Route index element={<Survey />} />
               </Route>
+              <Route path="dashboard" element={<Dashboard />} />
               <Route path="*" element={<NotFound />} />
             </Route>
           </Routes>
