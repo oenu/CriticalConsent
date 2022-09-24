@@ -140,19 +140,7 @@ export default function Survey() {
       break;
     case "succeeded":
       content = (
-        <Box>
-          <Button
-            variant="light"
-            size="xs"
-            onClick={() => {
-              dispatch(clearGroup());
-              dispatch(clearSurvey());
-              navigate("/survey");
-            }}
-          >
-            Log Out
-          </Button>
-          <Divider my="md" />
+        <Box mt={"md"}>
           <QuestionList />
         </Box>
       );
