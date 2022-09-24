@@ -96,6 +96,9 @@ export const fetchGroupByIdAsync = createAsyncThunk(
 // Export const equal to the group_id
 export const getGroupId = (state: RootState) => state.group.id;
 
+// Export const equal to the group_name
+export const getGroupName = (state: RootState) => state.group.name;
+
 // Export whether the group accepts mature content at all
 export const getShowMatureContent = (state: RootState) =>
   state.group.mature_content;
@@ -104,18 +107,18 @@ export const getShowMatureContent = (state: RootState) =>
 export const getGroupCategories = (
   state: RootState
 ): {
-  general_content: boolean;
-  graphic_content: boolean;
-  offensive_content: boolean;
-  phobic_content: boolean;
-  sexual_content: boolean;
+  general: boolean;
+  graphic: boolean;
+  offensive: boolean;
+  phobic: boolean;
+  sexual: boolean;
 } => {
   return {
-    general_content: true,
-    graphic_content: state.group.graphic_content || false,
-    offensive_content: state.group.offensive_content || false,
-    phobic_content: state.group.phobic_content || false,
-    sexual_content: state.group.sexual_content || false,
+    general: true,
+    graphic: state.group.graphic_content || false,
+    offensive: state.group.offensive_content || false,
+    phobic: state.group.phobic_content || false,
+    sexual: state.group.sexual_content || false,
   };
 };
 

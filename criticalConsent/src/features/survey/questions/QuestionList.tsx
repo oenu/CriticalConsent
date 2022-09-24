@@ -15,7 +15,7 @@ import {
 // Types
 import { useEffect } from "react";
 import { QuestionType } from "../../../types";
-import { getGroupCategories } from "../../group/groupSlice";
+import { getGroupCategories, getGroupName } from "../../group/groupSlice";
 
 function QuestionList() {
   // Redux wrapper for dispatch
@@ -29,6 +29,9 @@ function QuestionList() {
 
   // Whether to highlight unanswered questions and show a warning
   const highlightUnanswered = useAppSelector(getHighlightUnanswered);
+
+  // Group name of the current survey
+  const group_name = useAppSelector(getGroupName);
 
   // A list of questions in array form
   const questionList = Object.values(questions);
@@ -84,7 +87,7 @@ function QuestionList() {
 
         content = (
           <Stack style={{ minWidth: "80vw" }}>
-            <Title>General</Title>
+            <Title>{group_name}</Title>
             {categorizedQuestions["general"].map((question: QuestionType) => {
               if (question !== null) {
                 return <Question key={question.id} question={question} />;
@@ -94,8 +97,15 @@ function QuestionList() {
             {/* For each sub category, show the category name and the list of questions */}
             {Object.keys(categorizedQuestions).map((category) => {
               // Ignore the general category from the list of sub categories
+              console.debug("category", category);
               if (category !== "general") {
                 if (categorizedQuestions[category].length > 0) {
+                  console.debug(
+                    "categorizedQuestions",
+                    categorizedQuestions[category]
+                  );
+
+                  console.debug(Object.keys(groupCategories));
                   if (Object.keys(groupCategories).includes(category)) {
                     return (
                       <div key={category}>
