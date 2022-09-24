@@ -1,5 +1,13 @@
 // Components
-import { Alert, Button, Center, Divider, Stack, Title } from "@mantine/core";
+import {
+  Alert,
+  Button,
+  Center,
+  Divider,
+  Group,
+  Stack,
+  Title,
+} from "@mantine/core";
 import Question from "./Question";
 
 // Redux
@@ -7,22 +15,31 @@ import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 import {
   fetchQuestionsAsync,
   selectHighlightUnanswered,
-  selectQuestionsStatus,
+  selectSurveyStatus,
   selectAllQuestions,
   uploadResponse,
+  clearSurvey,
 } from "../surveySlice";
 
 // Types
 import { useEffect } from "react";
 import { QuestionType } from "../../../types";
-import { selectGroupCategories, selectGroupName } from "../../group/groupSlice";
+import {
+  clearGroup,
+  selectGroupCategories,
+  selectGroupName,
+} from "../../group/groupSlice";
+import { useNavigate } from "react-router-dom";
 
 function QuestionList() {
   // Redux wrapper for dispatch
   const dispatch = useAppDispatch();
 
+  // Use Navigate hook
+  const navigate = useNavigate();
+
   // Status of the retrieval of questions from the Database
-  const questionsStatus = useAppSelector(selectQuestionsStatus);
+  const questionsStatus = useAppSelector(selectSurveyStatus);
 
   // List of questions from the Database
   const questions = useAppSelector(selectAllQuestions);
@@ -87,7 +104,20 @@ function QuestionList() {
 
         content = (
           <Stack style={{ minWidth: "80vw" }}>
-            <Title>{group_name}</Title>
+            <Group align={"center"}>
+              <Title order={2}>{group_name}</Title>
+              <Button
+                variant="light"
+                size="xs"
+                onClick={() => {
+                  dispatch(clearGroup());
+                  dispatch(clearSurvey());
+                  navigate("/survey");
+                }}
+              >
+                Log Out
+              </Button>
+            </Group>
             {categorizedQuestions["general"].map((question: QuestionType) => {
               if (question !== null) {
                 return <Question key={question.id} question={question} />;
@@ -159,7 +189,7 @@ function QuestionList() {
       );
   }
 
-  return <Center>{content}</Center>;
+  return content;
 }
 
 export default QuestionList;
