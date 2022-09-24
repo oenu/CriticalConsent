@@ -17,6 +17,7 @@ import {
   selectBurgerMenuOpen,
   toggleBurgerMenu,
 } from "./features/app/appSlice";
+import { selectSurveyStatus } from "./features/survey/surveySlice";
 
 // Redux
 import { useAppDispatch, useAppSelector } from "./redux/hooks";
@@ -33,6 +34,9 @@ export default function App() {
 
   // Whether the burger menu is open
   const burgerOpen = useAppSelector(selectBurgerMenuOpen);
+
+  // Whether a survey is loaded
+  const surveyLoaded = useAppSelector(selectSurveyStatus);
 
   return (
     <AppShell
@@ -73,6 +77,14 @@ export default function App() {
               active={location.pathname === "/survey"}
               component={Link}
               to="/survey"
+              onClick={() => dispatch(closeBurgerMenu())}
+            />
+            <NavLink
+              label="Dashboard"
+              active={location.pathname === "/dashboard"}
+              component={Link}
+              disabled={surveyLoaded !== "succeeded"}
+              to="/dashboard"
               onClick={() => dispatch(closeBurgerMenu())}
             />
           </Navbar.Section>
