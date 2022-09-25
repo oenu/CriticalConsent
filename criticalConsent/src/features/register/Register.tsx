@@ -20,6 +20,8 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
+import { clearGroup } from "../group/groupSlice";
+import { clearSurvey } from "../survey/surveySlice";
 
 import {
   selectMatureContent,
@@ -78,6 +80,9 @@ function Register() {
   // If the content is valid, upload it to the server
   useEffect(() => {
     if (contentValidated) {
+      dispatch(clearGroup());
+      dispatch(clearSurvey());
+
       dispatch(uploadRegistrationAsync());
     }
   }, [contentValidated, dispatch]);
@@ -376,10 +381,10 @@ function Register() {
           <Alert>Survey Created!</Alert>
           <Button
             onClick={() => {
-              navigate("/dashboard");
+              navigate(`/survey/${survey_id}`);
             }}
           >
-            Go to Dashboard
+            Go to Survey
           </Button>
         </Center>
       );
